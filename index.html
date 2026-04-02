@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>L2 ADEN - LIVE TRACKER PRO</title>
+    <style>
+        body { 
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('bg.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #050505; 
+            color: #ffffff; 
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .main-card {
+            background: rgba(15, 15, 25, 0.85);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            width: 750px;
+            box-shadow: 0 20px 60px rgba(0,0,0,1);
+        }
+
+        h1 { color: #ffd700; text-transform: uppercase; letter-spacing: 8px; margin: 0; font-size: 28px; }
+
+        #clock { color: #888; font-size: 14px; margin-bottom: 25px; font-family: monospace; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            transition: all 0.5s ease;
+        }
+        
+        .status-waiting { 
+            background: rgba(255, 215, 0, 0.1); 
+            color: #ffd700; 
+            border: 1px solid #ffd700; 
+        }
+
+        .status-live { 
+            background: rgba(0, 255, 136, 0.2); 
+            color: #00ff88; 
+            border: 2px solid #00ff88; 
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            animation: pulse-green 2s infinite; 
+        }
+
+        @keyframes pulse-green {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        #event-name { font-size: 40px; font-weight: 900; color: #fff; margin: 5px 0; text-transform: uppercase; }
+
+        #timer { 
+            font-size: 90px; 
+            color: #ff9800; 
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-shadow: 0 0 30px rgba(255, 152, 0, 0.4);
+            margin-bottom: 30px;
+            line-height: 1;
+        }
+
+        .schedule-title {
+            font-size: 13px; color: #888; margin-bottom: 15px; text-transform: uppercase;
+            letter-spacing: 2px; border-bottom: 1px solid rgba(255,215,0,0.1); padding-bottom: 10px;
+        }
+
+        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .event-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .active-row { 
+            border-color: #00ff88; 
+            background: rgba(0, 255, 136, 0.1); 
+            box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.1);
+        }
+
+        .active-row .event-time-info { color: #00ff88 !important; }
+
+        .event-label { color: #ddd; font-size: 13px; }
+        .event-time-info { color: #ffd700; font-weight: bold; font-family: monospace; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="main-card">
+        <h1>L2 ADEN EVENTS</h1>
+        <div id="clock">SERVER TIME: 00:00:00</div>
+        
+        <div id="status-box" class="status-badge status-waiting">ΕΠΟΜΕΝΟ EVENT</div>
+        <div id="event-name">ΦΟΡΤΩΣΗ...</div>
+        <div id="timer">00:00:00</div>
+
+        <div class="schedule-title">Πρόγραμμα (Ταξινομημένο κατά ώρα)</div>
+        <div id="grid-container" class="events-grid"></div>
+    </div>
+
+    <script>
+        const eventsList = [
+            { n: "Invasion", t: "12:00", d: 30 }, 
+            { n: "Invasion", t: "16:00", d: 30 },
+            { n: "Invasion", t: "20:00", d: 30 }, 
+            { n: "Invasion", t: "00:00", d: 30 },
+            { n: "Αρκουδάκια", t: "11:45", d: 15 }, 
+            { n: "Αρκουδάκια", t: "23:45", d: 15 },
+            { n: "Catacombs", t: "01:00", d: 60 }, 
+            { n: "Olympiad", t: "02:00", d: 30 },
+            { n: "Fortress", t: "04:00", d: 15 }, 
+            { n: "Sieges", t: "01:00", d: 60 }
+        ];
+
+        function formatTime(ms) {
+            let hh = Math.floor(ms / 3600000);
+            let mm = Math.floor((ms % 3600000) / 60000);
+            let ss = Math.floor((ms % 60000) / 1000);
+            return String(hh).padStart(2,'0') + ":" + String(mm).padStart(2,'0') + ":" + String(ss).padStart(2,'0');
+        }
+
+        function update() {
+            const now = new Date();
+            document.getElementById('clock').innerHTML = "SERVER TIME: " + now.toLocaleTimeString('el-GR');
+
+            // Προετοιμασία δεδομένων για ταξινόμηση
+            let processedEvents = eventsList.map(e => {
+                const [h, m] = e.t.split(':').map(Number);
+                let startTime = new Date();
+                startTime.setHours(h, m, 0, 0);
+                let endTime = new Date(startTime.getTime() + e.d * 60000);
+
+                if (now > endTime) {
+                    startTime.setDate(startTime.getDate() + 1);
+                    endTime.setDate(endTime.getDate() + 1);
+                }
+
+                let isLive = (now >= startTime && now <= endTime);
+                let diff = isLive ? (endTime - now) : (startTime - now);
+
+                return { ...e, startTime, endTime, isLive, diff };
+            });
+
+            // ΤΑΞΙΝΟΜΗΣΗ: Πρώτα τα Live, μετά αυτά που ξεκινάνε πιο σύντομα
+            processedEvents.sort((a, b) => {
+                if (a.isLive && !b.isLive) return -1;
+                if (!a.isLive && b.isLive) return 1;
+                return a.diff - b.diff;
+            });
+
+            let gridHtml = "";
+            let mainEvent = processedEvents[0]; // Το πρώτο στη λίστα είναι το "σημαντικό"
+
+            processedEvents.forEach((e) => {
+                let timeDisplay = e.isLive ? "ΛΗΞΗ ΣΕ: " + formatTime(e.diff) : formatTime(e.diff);
+                let rowClass = e.isLive ? "active-row" : "";
+
+                gridHtml += `
+                    <div class="event-item ${rowClass}">
+                        <span class="event-label">${e.n}</span>
+                        <span class="event-time-info">${timeDisplay}</span>
+                    </div>
+                `;
+            });
+
+            document.getElementById('grid-container').innerHTML = gridHtml;
+
+            // Update Κεντρικού Timer
+            if (mainEvent) {
+                document.getElementById('event-name').innerHTML = mainEvent.n;
+                document.getElementById('timer').innerHTML = formatTime(mainEvent.diff);
+                
+                const statusBox = document.getElementById('status-box');
+                const timerEl = document.getElementById('timer');
+
+                if (mainEvent.isLive) {
+                    statusBox.innerHTML = "EVENT IN PROGRESS";
+                    statusBox.className = "status-badge status-live";
+                    timerEl.style.color = "#00ff88";
+                    timerEl.style.textShadow = "0 0 30px rgba(0, 255, 136, 0.4)";
+                } else {
+                    statusBox.innerHTML = "ΕΠΟΜΕΝΟ EVENT";
+                    statusBox.className = "status-badge status-waiting";
+                    timerEl.style.color = "#ff9800";
+                    timerEl.style.textShadow = "0 0 30px rgba(255, 152, 0, 0.4)";
+                }
+            }
+        }
+
+        setInterval(update, 1000);
+        update();
+    </script>
+</body>
+</html>
+
