@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L2 ADEN - LIVE TRACKER PRO</title>
+    <title>L2 ADEN - PRO TRACKER</title>
+    <!-- Προσθήκη Gaming Γραμματοσειράς -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         body { 
-            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('bg.jpeg');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.95)), url('bg.jpeg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-color: #050505; 
             color: #ffffff; 
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -21,66 +23,93 @@
         }
 
         .main-card {
-            background: rgba(15, 15, 25, 0.85);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 215, 0, 0.3);
+            background: rgba(20, 20, 30, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-top: 4px solid #ffd700; /* Χρυσή γραμμή στην κορυφή */
             padding: 30px;
-            border-radius: 30px;
+            border-radius: 20px;
             text-align: center;
-            width: 90%;
-            max-width: 750px;
-            box-shadow: 0 20px 60px rgba(0,0,0,1);
+            width: 95%;
+            max-width: 700px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
 
-        h1 { color: #ffd700; text-transform: uppercase; letter-spacing: 5px; margin: 0; font-size: 24px; }
-        #clock { color: #888; font-size: 14px; margin-bottom: 20px; font-family: monospace; }
+        h1 { 
+            font-family: 'Orbitron', sans-serif;
+            color: #ffd700; 
+            text-transform: uppercase; 
+            letter-spacing: 6px; 
+            margin: 0; 
+            font-size: 26px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        #clock { color: #aaa; font-size: 14px; margin-bottom: 25px; font-family: monospace; letter-spacing: 1px; }
 
         .status-badge {
             display: inline-block;
-            padding: 6px 20px;
-            border-radius: 50px;
-            font-size: 12px;
+            padding: 5px 18px;
+            border-radius: 4px;
+            font-size: 11px;
             font-weight: bold;
             text-transform: uppercase;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             letter-spacing: 2px;
         }
         
-        .status-waiting { background: rgba(255, 215, 0, 0.1); color: #ffd700; border: 1px solid #ffd700; }
-        .status-live { background: rgba(0, 255, 136, 0.2); color: #00ff88; border: 2px solid #00ff88; animation: pulse-green 2s infinite; }
-
-        @keyframes pulse-green {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
+        .status-waiting { border: 1px solid #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
+        .status-live { 
+            border: 1px solid #00ff88; 
+            color: #00ff88; 
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            animation: pulse-glow 2s infinite; 
         }
 
-        #active-events-container {
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); }
         }
 
         .live-event-row {
-            padding: 15px;
-            background: rgba(0, 255, 136, 0.05);
-            border-radius: 15px;
-            border-left: 5px solid #00ff88;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            margin-bottom: 15px;
         }
 
-        .live-name { font-size: 32px; font-weight: 900; text-transform: uppercase; display: block; }
-        .live-timer { font-size: 50px; font-weight: bold; font-family: 'Courier New', monospace; color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
+        .live-name { font-family: 'Orbitron', sans-serif; font-size: 28px; color: #fff; margin-bottom: 5px; display: block; }
+        .live-timer { font-size: 55px; font-weight: bold; color: #00ff88; text-shadow: 0 0 25px rgba(0, 255, 136, 0.6); line-height: 1; }
 
-        .next-name { font-size: 35px; font-weight: 900; color: #fff; text-transform: uppercase; }
-        .next-timer { font-size: 70px; font-weight: bold; font-family: 'Courier New', monospace; color: #ff9800; text-shadow: 0 0 30px rgba(255, 152, 0, 0.4); }
+        .next-name { font-family: 'Orbitron', sans-serif; font-size: 32px; color: #eee; text-transform: uppercase; }
+        .next-timer { font-size: 65px; font-weight: bold; color: #ff9800; text-shadow: 0 0 30px rgba(255, 152, 0, 0.5); line-height: 1.2; }
 
-        .schedule-title { font-size: 13px; color: #888; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid rgba(255,215,0,0.1); padding-bottom: 10px; }
-        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .event-item { background: rgba(255, 255, 255, 0.03); padding: 10px 15px; border-radius: 12px; display: flex; justify-content: space-between; border: 1px solid rgba(255,255,255,0.05); }
-        .active-row { border-color: #00ff88; background: rgba(0, 255, 136, 0.1); }
-        .event-label { color: #ddd; font-size: 12px; }
-        .event-time-info { color: #ffd700; font-weight: bold; font-family: monospace; font-size: 13px; }
+        .schedule-title { 
+            font-size: 12px; color: #666; margin: 30px 0 15px 0; 
+            text-transform: uppercase; letter-spacing: 3px; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        .schedule-title::before, .schedule-title::after {
+            content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.1); margin: 0 15px;
+        }
+
+        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .event-item { 
+            background: rgba(255, 255, 255, 0.02); 
+            padding: 12px 18px; 
+            border-radius: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            transition: 0.3s;
+        }
+        .active-row { border-color: rgba(0, 255, 136, 0.5); background: rgba(0, 255, 136, 0.05); }
+        .event-label { color: #bbb; font-size: 14px; font-weight: 500; }
+        .event-time-info { color: #ffd700; font-weight: bold; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -103,7 +132,7 @@
             { n: "Invasion", t: "16:00", d: 30 },
             { n: "Invasion", t: "20:00", d: 30 }, 
             { n: "Invasion", t: "00:00", d: 30 },
-            { n: "Teddy Bears", t: "13:00", d: 15 }, 
+            { n: "Teddy Bears", t: "12:10", d: 15 }, 
             { n: "Teddy Bears", t: "23:45", d: 15 },
             { n: "Catacombs", t: "01:00", d: 60 }, 
             { n: "Olympiad", t: "02:00", d: 30 },
@@ -120,16 +149,12 @@
 
         function update() {
             const now = new Date();
-            // Αλλαγή σε 'en-US' για να φαίνεται AM/PM στο ρολόι
             document.getElementById('clock').innerHTML = "SERVER TIME: " + now.toLocaleTimeString('en-US');
 
             let processedEvents = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
                 let startTime = new Date();
-                
-                // Κλειδωμένο σε ώρα Ελλάδος (UTC+3)
                 startTime.setUTCHours(h - 3, m, 0, 0); 
-
                 let endTime = new Date(startTime.getTime() + e.d * 60000);
 
                 if (now > endTime) {
@@ -152,6 +177,7 @@
             let liveEvents = processedEvents.filter(e => e.isLive);
             let nextEvent = processedEvents.find(e => !e.isLive);
 
+            // GRID UPDATE
             let gridHtml = "";
             processedEvents.forEach((e) => {
                 let timeDisplay = e.isLive ? "ENDS IN: " + formatTime(e.diff) : formatTime(e.diff);
@@ -159,6 +185,7 @@
             });
             document.getElementById('grid-container').innerHTML = gridHtml;
 
+            // MAIN SCREEN UPDATE
             let container = document.getElementById('active-events-container');
             let statusBox = document.getElementById('status-box');
 
