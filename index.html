@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L2 ADEN - GREEK TRACKER PRO</title>
+    <title>L2 ADEN - GREEK TRACKER</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        /* --- LOADING SCREEN STYLES (PREMIUM VERSION) --- */
+        /* --- LOADING SCREEN STYLES --- */
         #loader-wrapper {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -15,62 +15,25 @@
             z-index: 9999;
             transition: opacity 0.8s ease, visibility 0.8s;
         }
-
         .loader-content { text-align: center; }
-
-        /* Ο ΝΕΟΣ ΔΙΠΛΟΣ SPINNER */
         .spinner {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 30px;
-        }
-
-        /* Εξωτερικός δακτύλιος */
-        .spinner::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            border: 3px solid transparent;
-            border-top: 3px solid #ffd700;
+            width: 80px; height: 80px;
+            border: 3px solid rgba(255, 215, 0, 0.1);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            border-top-color: #ffd700;
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
         }
-
-        /* Εσωτερικός δακτύλιος (γυρνάει ανάποδα) */
-        .spinner::after {
-            content: "";
-            position: absolute;
-            top: 15px; left: 15px; right: 15px; bottom: 15px;
-            border: 2px solid transparent;
-            border-bottom: 2px solid #ffae00;
-            border-radius: 50%;
-            animation: spin-reverse 1.5s linear infinite;
-            opacity: 0.7;
-        }
-
         .loader-text {
             font-family: 'Orbitron', sans-serif;
             color: #ffd700;
             letter-spacing: 5px;
             font-size: 14px;
             animation: blink 1.5s infinite;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes spin-reverse {
-            from { transform: rotate(360deg); }
-            to { transform: rotate(0deg); }
-        }
-
+        @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
         .loader-hidden { opacity: 0; visibility: hidden; }
 
         /* --- MAIN APP STYLES --- */
@@ -80,7 +43,7 @@
             font-family: 'Rajdhani', sans-serif;
             display: flex; justify-content: center; align-items: center; 
             min-height: 100vh; margin: 0;
-            background-image: radial-gradient(circle at center, #111 0%, #050505 100%);
+            background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.95));
         }
 
         .main-card {
@@ -114,4 +77,177 @@
             border-radius: 10px; margin: 10px 0 25px 0; overflow: hidden;
         }
         .progress-bar { height: 100%; width: 0%; transition: width 1s linear; }
-        .bg-live { background: linear-gradient(90deg, #00ff88, #
+        .bg-live { background: linear-gradient(90deg, #00ff88, #00bd65); box-shadow: 0 0 10px #00ff88; }
+        .bg-waiting { background: linear-gradient(90deg, #ff9800, #ffd700); box-shadow: 0 0 10px #ff9800; }
+
+        .event-display-block { margin-bottom: 20px; }
+        .live-name, .next-name { font-family: 'Orbitron', sans-serif; font-size: 28px; color: #fff; }
+        .live-timer { font-size: 55px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+        .next-timer { font-size: 55px; font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255, 152, 0, 0.4); }
+
+        .schedule-title { font-size: 11px; color: #666; margin: 30px 0 15px; text-transform: uppercase; letter-spacing: 3px; display: flex; align-items: center; }
+        .schedule-title::before, .schedule-title::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.05); margin: 0 15px; }
+
+        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .event-item { 
+            background: rgba(255, 255, 255, 0.02); padding: 12px 15px; border-radius: 10px; 
+            display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .active-row { border-color: #00ff88; background: rgba(0, 255, 136, 0.05); }
+        .event-label { color: #ddd; font-size: 14px; font-weight: 500; }
+        .event-time-info { color: #ffd700; font-weight: bold; font-family: monospace; font-size: 14px; }
+        .start-tag { color: #555; font-size: 10px; display: block; }
+
+        @media (max-width: 500px) {
+            .events-grid { grid-template-columns: 1fr; }
+            .live-timer, .next-timer { font-size: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOADING SCREEN -->
+    <div id="loader-wrapper">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <div class="loader-text">CONNECTING TO ADEN...</div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div class="main-card">
+        <h1>L2 ADEN EVENTS</h1>
+        <div id="clock">LOCAL TIME: --:--:--</div>
+        
+        <div id="status-box" class="status-badge">INITIALIZING...</div>
+        
+        <div id="active-events-container"></div>
+
+        <div class="schedule-title">Full Schedule (Athens Time)</div>
+        <div id="grid-container" class="events-grid"></div>
+    </div>
+
+    <script>
+        const icons = {
+            "Invasion": "⚔️",
+            "Teddy Bears": "🧸",
+            "Catacombs": "💀",
+            "Olympiad": "🏆",
+            "Fortress": "🚩",
+            "Sieges": "🏰",
+            "Forest of Duels": "🤺",
+            "Mafia's Hideout": "🕵️‍♂️",
+            "Iron Depot": "🏗️",
+            "Boss Subjugation": "👹"
+        };
+
+        const eventsList = [
+            { n: "Invasion", t: "15:40", d: 30 }, 
+            { n: "Invasion", t: "19:40", d: 30 },
+            { n: "Invasion", t: "23:40", d: 30 }, 
+            { n: "Invasion", t: "03:40", d: 30 },
+            { n: "Teddy Bears", t: "13:00", d: 15 }, 
+            { n: "Teddy Bears", t: "15:13", d: 15 },
+            { n: "Catacombs", t: "01:00", d: 60 }, 
+            { n: "Olympiad", t: "02:00", d: 30 },
+            { n: "Fortress", t: "22:00", d: 20 }, 
+            { n: "Sieges", t: "01:00", d: 60 },
+            { n: "Forest of Duels", t: "23:30", d: 30 },
+            { n: "Mafia's Hideout", t: "00:00", d: 30 },
+            { n: "Iron Depot", t: "22:05", d: 15 },
+            { n: "Boss Subjugation", t: "22:20", d: 25 }
+        ];
+
+        function formatTime(ms) {
+            let hh = Math.floor(ms / 3600000);
+            let mm = Math.floor((ms % 3600000) / 60000);
+            let ss = Math.floor((ms % 60000) / 1000);
+            return String(hh).padStart(2,'0') + ":" + String(mm).padStart(2,'0') + ":" + String(ss).padStart(2,'0');
+        }
+
+        function update() {
+            const now = new Date();
+            document.getElementById('clock').innerHTML = "LOCAL TIME: " + now.toLocaleTimeString('en-GB', { hour12: false });
+
+            let processedEvents = eventsList.map(e => {
+                const [h, m] = e.t.split(':').map(Number);
+                let startTime = new Date();
+                startTime.setHours(h, m, 0, 0); 
+                let endTime = new Date(startTime.getTime() + e.d * 60000);
+
+                if (now > endTime) {
+                    startTime.setDate(startTime.getDate() + 1);
+                    endTime.setDate(endTime.getDate() + 1);
+                }
+
+                let isLive = (now >= startTime && now <= endTime);
+                let diff = isLive ? (endTime - now) : (startTime - now);
+                
+                return { ...e, startTime, endTime, isLive, diff };
+            });
+
+            processedEvents.sort((a, b) => a.diff - b.diff);
+
+            let liveEvents = processedEvents.filter(e => e.isLive);
+            let nextEvent = processedEvents.find(e => !e.isLive);
+
+            // 1. GRID UPDATE
+            let gridHtml = "";
+            processedEvents.forEach((e) => {
+                let icon = icons[e.n] || "";
+                let timeDisplay = e.isLive ? "LIVE" : formatTime(e.diff);
+                gridHtml += `
+                    <div class="event-item ${e.isLive ? 'active-row' : ''}">
+                        <div>
+                           <span class="event-label">${icon} ${e.n}</span>
+                           <span class="start-tag">Starts at ${e.t}</span>
+                        </div>
+                        <span class="event-time-info">${timeDisplay}</span>
+                    </div>`;
+            });
+            document.getElementById('grid-container').innerHTML = gridHtml;
+
+            // 2. ACTIVE AREA UPDATE
+            let container = document.getElementById('active-events-container');
+            let statusBox = document.getElementById('status-box');
+            let activeHtml = "";
+
+            if (liveEvents.length > 0) {
+                statusBox.innerHTML = "EVENTS IN PROGRESS";
+                statusBox.className = "status-badge status-live";
+                liveEvents.forEach(e => {
+                    let perc = (e.diff / (e.d * 60000)) * 100;
+                    activeHtml += `
+                        <div class="event-display-block">
+                            <div class="live-name">${icons[e.n] || ''} ${e.n}</div>
+                            <div class="live-timer">${formatTime(e.diff)}</div>
+                            <div class="progress-container"><div class="progress-bar bg-live" style="width: ${perc}%"></div></div>
+                        </div>`;
+                });
+            } else if (nextEvent) {
+                statusBox.innerHTML = "NEXT EVENT";
+                statusBox.className = "status-badge status-waiting";
+                let perc = 100 - Math.min(100, (nextEvent.diff / 3600000) * 100);
+                activeHtml = `
+                    <div class="event-display-block">
+                        <div class="next-name">${icons[nextEvent.n] || ''} ${nextEvent.n}</div>
+                        <div class="next-timer">${formatTime(nextEvent.diff)}</div>
+                        <div class="progress-container"><div class="progress-bar bg-waiting" style="width: ${perc}%"></div></div>
+                    </div>`;
+            }
+            container.innerHTML = activeHtml;
+        }
+
+        // --- LOADING SCREEN SCRIPT ---
+        window.addEventListener("load", function() {
+            const loader = document.getElementById("loader-wrapper");
+            setTimeout(() => {
+                loader.classList.add("loader-hidden");
+            }, 1200); // 1.2 δευτερόλεπτα εμφάνιση loader
+        });
+
+        setInterval(update, 1000);
+        update();
+    </script>
+</body>
+</html>
