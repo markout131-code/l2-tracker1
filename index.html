@@ -162,7 +162,7 @@
             // 1. UPDATE ΤΟΥ GRID (Κάτω μέρος)
             let gridHtml = "";
             processedEvents.forEach((e) => {
-                let timeDisplay = e.isLive ? "ΛΗΞΗ ΣΕ: " + formatTime(e.diff) : formatTime(e.diff);
+                let timeDisplay = e.isLive ? "EXPIRES IN: " + formatTime(e.diff) : formatTime(e.diff);
                 gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}"><span class="event-label">${e.n}</span><span class="event-time-info">${timeDisplay}</span></div>`;
             });
             document.getElementById('grid-container').innerHTML = gridHtml;
