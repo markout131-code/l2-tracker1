@@ -127,10 +127,18 @@
 
             let processedEvents = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
+                
+                // Δημιουργούμε την ώρα του event σε ώρα Ελλάδος (UTC+3)
                 let startTime = new Date();
-                startTime.setHours(h, m, 0, 0);
+                
+                // Υπολογίζουμε τη διαφορά της τοπικής ώρας από την ώρα Ελλάδος
+                // Η Ελλάδα είναι UTC+3 (το καλοκαίρι). 
+                // Χρησιμοποιούμε το .setUTCHours(h - 3, m, 0, 0) για να κλειδώσουμε την ώρα Ελλάδος.
+                startTime.setUTCHours(h - 3, m, 0, 0); 
+
                 let endTime = new Date(startTime.getTime() + e.d * 60000);
 
+                // Αν το event πέρασε για σήμερα, πάμε στην επόμενη μέρα
                 if (now > endTime) {
                     startTime.setDate(startTime.getDate() + 1);
                     endTime.setDate(endTime.getDate() + 1);
