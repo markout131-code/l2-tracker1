@@ -128,7 +128,7 @@
             { n: "Invasion", t: "16:00", d: 30 },
             { n: "Invasion", t: "20:00", d: 30 }, 
             { n: "Invasion", t: "00:00", d: 30 },
-            { n: "Αρκουδάκια", t: "12:30", d: 15 }, 
+            { n: "Αρκουδάκια", t: "12:05", d: 15 }, 
             { n: "Αρκουδάκια", t: "23:45", d: 15 },
             { n: "Catacombs", t: "01:00", d: 60 }, 
             { n: "Olympiad", t: "02:00", d: 30 },
@@ -147,13 +147,13 @@
             const now = new Date();
             document.getElementById('clock').innerHTML = "SERVER TIME: " + now.toLocaleTimeString('el-GR');
 
-            // Προετοιμασία δεδομένων για ταξινόμηση
             let processedEvents = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
                 let startTime = new Date();
                 startTime.setHours(h, m, 0, 0);
                 let endTime = new Date(startTime.getTime() + e.d * 60000);
 
+                // Αν το event έχει ήδη λήξει για σήμερα, υπολόγισε την αυριανή ώρα
                 if (now > endTime) {
                     startTime.setDate(startTime.getDate() + 1);
                     endTime.setDate(endTime.getDate() + 1);
@@ -165,20 +165,22 @@
                 return { ...e, startTime, endTime, isLive, diff };
             });
 
-            // ΤΑΞΙΝΟΜΗΣΗ: Πρώτα τα Live, μετά αυτά που ξεκινάνε πιο σύντομα
+            // Ταξινόμηση: Πρώτα τα Live, μετά τα επόμενα
             processedEvents.sort((a, b) => {
                 if (a.isLive && !b.isLive) return -1;
                 if (!a.isLive && b.isLive) return 1;
                 return a.diff - b.diff;
             });
 
-            let gridHtml = "";
-            let mainEvent = processedEvents[0]; // Το πρώτο στη λίστα είναι το "σημαντικό"
+            // Φίλτρο για να βρούμε ΟΛΑ τα Live events
+            let liveEvents = processedEvents.filter(e => e.isLive);
+            let nextEvent = processedEvents.find(e => !e.isLive);
 
+            // Κατασκευή του GRID (κάτω μέρος)
+            let gridHtml = "";
             processedEvents.forEach((e) => {
                 let timeDisplay = e.isLive ? "ΛΗΞΗ ΣΕ: " + formatTime(e.diff) : formatTime(e.diff);
                 let rowClass = e.isLive ? "active-row" : "";
-
                 gridHtml += `
                     <div class="event-item ${rowClass}">
                         <span class="event-label">${e.n}</span>
@@ -186,34 +188,38 @@
                     </div>
                 `;
             });
-
             document.getElementById('grid-container').innerHTML = gridHtml;
 
-            // Update Κεντρικού Timer
-            if (mainEvent) {
-                document.getElementById('event-name').innerHTML = mainEvent.n;
-                document.getElementById('timer').innerHTML = formatTime(mainEvent.diff);
-                
-                const statusBox = document.getElementById('status-box');
-                const timerEl = document.getElementById('timer');
+            // --- ΔΙΑΧΕΙΡΙΣΗ ΚΕΝΤΡΙΚΗΣ ΟΘΟΝΗΣ ---
+            let statusBox = document.getElementById('status-box');
+            let eventTitle = document.getElementById('event-name');
+            let timerEl = document.getElementById('timer');
 
-                if (mainEvent.isLive) {
-                    statusBox.innerHTML = "EVENT IN PROGRESS";
-                    statusBox.className = "status-badge status-live";
-                    timerEl.style.color = "#00ff88";
-                    timerEl.style.textShadow = "0 0 30px rgba(0, 255, 136, 0.4)";
-                } else {
-                    statusBox.innerHTML = "ΕΠΟΜΕΝΟ EVENT";
-                    statusBox.className = "status-badge status-waiting";
-                    timerEl.style.color = "#ff9800";
-                    timerEl.style.textShadow = "0 0 30px rgba(255, 152, 0, 0.4)";
-                }
+            if (liveEvents.length > 0) {
+                // Αν υπάρχουν LIVE events, δείξε τα ονόματά τους (χωρισμένα με &)
+                statusBox.innerHTML = "EVENTS IN PROGRESS";
+                statusBox.className = "status-badge status-live";
+                
+                let names = liveEvents.map(e => e.n).join(" & ");
+                eventTitle.innerHTML = names;
+                
+                // Δείξε τον χρόνο του event που λήγει ΠΙΟ ΣΥΝΤΟΜΑ
+                let shortestLive = liveEvents.sort((a,b) => a.diff - b.diff)[0];
+                timerEl.innerHTML = formatTime(shortestLive.diff);
+                timerEl.style.color = "#00ff88";
+                timerEl.style.textShadow = "0 0 30px rgba(0, 255, 136, 0.4)";
+                
+            } else if (nextEvent) {
+                // Αν δεν υπάρχει τίποτα Live, δείξε το επόμενο
+                statusBox.innerHTML = "ΕΠΟΜΕΝΟ EVENT";
+                statusBox.className = "status-badge status-waiting";
+                eventTitle.innerHTML = nextEvent.n;
+                timerEl.innerHTML = formatTime(nextEvent.diff);
+                timerEl.style.color = "#ff9800";
+                timerEl.style.textShadow = "0 0 30px rgba(255, 152, 0, 0.4)";
             }
         }
 
         setInterval(update, 1000);
         update();
     </script>
-</body>
-</html>
-
