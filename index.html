@@ -3,122 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L2 ADEN - PRO TRACKER</title>
-    <!-- Προσθήκη Gaming Γραμματοσειράς -->
+    <title>L2 ADEN - ELITE TRACKER</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         body { 
-            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.95)), url('bg.jpeg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-color: #050505; 
-            color: #ffffff; 
-            font-family: 'Rajdhani', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.95)), url('bg.jpeg');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            background-color: #050505; color: #ffffff; font-family: 'Rajdhani', sans-serif;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;
         }
 
         .main-card {
-            background: rgba(20, 20, 30, 0.8);
+            background: rgba(18, 18, 24, 0.9);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 215, 0, 0.2);
-            border-top: 4px solid #ffd700; /* Χρυσή γραμμή στην κορυφή */
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            width: 95%;
-            max-width: 700px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            border-top: 5px solid #ffd700;
+            padding: 35px; border-radius: 25px; text-align: center;
+            width: 95%; max-width: 800px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
         }
 
-        h1 { 
-            font-family: 'Orbitron', sans-serif;
-            color: #ffd700; 
-            text-transform: uppercase; 
-            letter-spacing: 6px; 
-            margin: 0; 
-            font-size: 26px;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-        }
-
-        #clock { color: #aaa; font-size: 14px; margin-bottom: 25px; font-family: monospace; letter-spacing: 1px; }
+        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 8px; margin: 0; font-size: 28px; }
+        #clock { color: #888; font-size: 13px; margin-bottom: 25px; letter-spacing: 2px; }
 
         .status-badge {
-            display: inline-block;
-            padding: 5px 18px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
+            display: inline-block; padding: 6px 20px; border-radius: 4px; font-size: 11px;
+            font-weight: bold; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 2px;
         }
-        
         .status-waiting { border: 1px solid #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
-        .status-live { 
-            border: 1px solid #00ff88; 
-            color: #00ff88; 
-            background: rgba(0, 255, 136, 0.1);
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
-            animation: pulse-glow 2s infinite; 
-        }
+        .status-live { border: 1px solid #00ff88; color: #00ff88; background: rgba(0, 255, 136, 0.15); animation: pulse-glow 2s infinite; }
 
         @keyframes pulse-glow {
             0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); }
-            50% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(0, 255, 136, 0.4); }
             100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); }
         }
 
-        .live-event-row {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            margin-bottom: 15px;
-        }
+        .live-name { font-family: 'Orbitron', sans-serif; font-size: 40px; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .live-timer { font-size: 70px; font-weight: bold; color: #00ff88; text-shadow: 0 0 30px rgba(0, 255, 136, 0.5); line-height: 1; margin: 10px 0; }
 
-        .live-name { font-family: 'Orbitron', sans-serif; font-size: 28px; color: #fff; margin-bottom: 5px; display: block; }
-        .live-timer { font-size: 55px; font-weight: bold; color: #00ff88; text-shadow: 0 0 25px rgba(0, 255, 136, 0.6); line-height: 1; }
+        .next-name { font-family: 'Orbitron', sans-serif; font-size: 35px; color: #eee; }
+        .next-timer { font-size: 75px; font-weight: bold; color: #ff9800; text-shadow: 0 0 35px rgba(255, 152, 0, 0.4); line-height: 1; }
 
-        .next-name { font-family: 'Orbitron', sans-serif; font-size: 32px; color: #eee; text-transform: uppercase; }
-        .next-timer { font-size: 65px; font-weight: bold; color: #ff9800; text-shadow: 0 0 30px rgba(255, 152, 0, 0.5); line-height: 1.2; }
+        .schedule-title { font-size: 12px; color: #555; margin: 40px 0 20px; text-transform: uppercase; letter-spacing: 4px; display: flex; align-items: center; }
+        .schedule-title::before, .schedule-title::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.05); margin: 0 15px; }
 
-        .schedule-title { 
-            font-size: 12px; color: #666; margin: 30px 0 15px 0; 
-            text-transform: uppercase; letter-spacing: 3px; 
-            display: flex; align-items: center; justify-content: center;
-        }
-        .schedule-title::before, .schedule-title::after {
-            content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.1); margin: 0 15px;
-        }
-
-        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .event-item { 
-            background: rgba(255, 255, 255, 0.02); 
-            padding: 12px 18px; 
-            border-radius: 8px; 
-            display: flex; 
-            justify-content: space-between; 
-            border: 1px solid rgba(255,255,255,0.05); 
-            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.02); padding: 15px 20px; border-radius: 12px; 
+            display: flex; justify-content: space-between; border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
         }
-        .active-row { border-color: rgba(0, 255, 136, 0.5); background: rgba(0, 255, 136, 0.05); }
-        .event-label { color: #bbb; font-size: 14px; font-weight: 500; }
-        .event-time-info { color: #ffd700; font-weight: bold; font-size: 14px; }
+        .event-item:hover { background: rgba(255, 215, 0, 0.05); border-color: rgba(255, 215, 0, 0.2); transform: translateY(-2px); }
+        .active-row { border-color: #00ff88; background: rgba(0, 255, 136, 0.05); }
+        .event-label { color: #ddd; font-size: 15px; font-weight: 500; }
+        .event-time-info { color: #ffd700; font-weight: bold; font-family: monospace; font-size: 15px; }
     </style>
 </head>
 <body>
 
     <div class="main-card">
         <h1>L2 ADEN EVENTS</h1>
-        <div id="clock">SERVER TIME: 00:00:00</div>
+        <div id="clock">SERVER TIME: --:--:--</div>
         
-        <div id="status-box" class="status-badge status-waiting">LOADING...</div>
+        <div id="status-box" class="status-badge status-waiting">INITIALIZING...</div>
         
         <div id="active-events-container"></div>
 
@@ -127,17 +75,22 @@
     </div>
 
     <script>
+        // Προσθήκη Icons στα ονόματα
+        const icons = {
+            "Invasion": "⚔️",
+            "Teddy Bears": "🧸",
+            "Catacombs": "💀",
+            "Olympiad": "🏆",
+            "Fortress": "🚩",
+            "Sieges": "🏰"
+        };
+
         const eventsList = [
-            { n: "Invasion", t: "12:00", d: 30 }, 
-            { n: "Invasion", t: "16:00", d: 30 },
-            { n: "Invasion", t: "20:00", d: 30 }, 
-            { n: "Invasion", t: "00:00", d: 30 },
-            { n: "Teddy Bears", t: "12:10", d: 15 }, 
-            { n: "Teddy Bears", t: "23:45", d: 15 },
-            { n: "Catacombs", t: "01:00", d: 60 }, 
-            { n: "Olympiad", t: "02:00", d: 30 },
-            { n: "Fortress", t: "04:00", d: 15 }, 
-            { n: "Sieges", t: "01:00", d: 60 }
+            { n: "Invasion", t: "12:00", d: 30 }, { n: "Invasion", t: "16:00", d: 30 },
+            { n: "Invasion", t: "20:00", d: 30 }, { n: "Invasion", t: "00:00", d: 30 },
+            { n: "Teddy Bears", t: "12:10", d: 15 }, { n: "Teddy Bears", t: "23:45", d: 15 },
+            { n: "Catacombs", t: "01:00", d: 60 }, { n: "Olympiad", t: "02:00", d: 30 },
+            { n: "Fortress", t: "04:00", d: 15 }, { n: "Sieges", t: "01:00", d: 60 }
         ];
 
         function formatTime(ms) {
@@ -149,7 +102,7 @@
 
         function update() {
             const now = new Date();
-            document.getElementById('clock').innerHTML = "SERVER TIME: " + now.toLocaleTimeString('en-US');
+            document.getElementById('clock').innerHTML = "SERVER TIME: " + now.toLocaleTimeString('en-US', { hour12: true });
 
             let processedEvents = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
@@ -168,50 +121,40 @@
                 return { ...e, startTime, endTime, isLive, diff };
             });
 
-            processedEvents.sort((a, b) => {
-                if (a.isLive && !b.isLive) return -1;
-                if (!a.isLive && b.isLive) return 1;
-                return a.diff - b.diff;
-            });
+            processedEvents.sort((a, b) => a.diff - b.diff);
 
             let liveEvents = processedEvents.filter(e => e.isLive);
             let nextEvent = processedEvents.find(e => !e.isLive);
 
-            // GRID UPDATE
+            // GRID
             let gridHtml = "";
             processedEvents.forEach((e) => {
-                let timeDisplay = e.isLive ? "ENDS IN: " + formatTime(e.diff) : formatTime(e.diff);
-                gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}"><span class="event-label">${e.n}</span><span class="event-time-info">${timeDisplay}</span></div>`;
+                let icon = icons[e.n] || "";
+                let timeDisplay = e.isLive ? "LIVE" : formatTime(e.diff);
+                gridHtml += `
+                    <div class="event-item ${e.isLive ? 'active-row' : ''}">
+                        <span class="event-label">${icon} ${e.n}</span>
+                        <span class="event-time-info">${timeDisplay}</span>
+                    </div>`;
             });
             document.getElementById('grid-container').innerHTML = gridHtml;
 
-            // MAIN SCREEN UPDATE
+            // MAIN
             let container = document.getElementById('active-events-container');
             let statusBox = document.getElementById('status-box');
 
             if (liveEvents.length > 0) {
                 statusBox.innerHTML = "EVENTS IN PROGRESS";
                 statusBox.className = "status-badge status-live";
-                
                 let activeHtml = "";
                 liveEvents.forEach(e => {
-                    activeHtml += `
-                        <div class="live-event-row">
-                            <span class="live-name">${e.n}</span>
-                            <span class="live-timer">${formatTime(e.diff)}</span>
-                        </div>
-                    `;
+                    activeHtml += `<div><div class="live-name">${icons[e.n]} ${e.n}</div><div class="live-timer">${formatTime(e.diff)}</div></div>`;
                 });
                 container.innerHTML = activeHtml;
             } else {
                 statusBox.innerHTML = "NEXT EVENT";
                 statusBox.className = "status-badge status-waiting";
-                container.innerHTML = `
-                    <div class="next-event-row">
-                        <div class="next-name">${nextEvent.n}</div>
-                        <div class="next-timer">${formatTime(nextEvent.diff)}</div>
-                    </div>
-                `;
+                container.innerHTML = `<div><div class="next-name">${icons[nextEvent.n]} ${nextEvent.n}</div><div class="next-timer">${formatTime(nextEvent.diff)}</div></div>`;
             }
         }
 
