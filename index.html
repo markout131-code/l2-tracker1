@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L2 ADEN - ELITE TRACKER</title>
+    <title>L2 ADEN - ELITE TRACKER PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         body { 
@@ -33,16 +33,25 @@
         .status-waiting { border: 1px solid #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
         .status-live { border: 1px solid #00ff88; color: #00ff88; background: rgba(0, 255, 136, 0.15); animation: pulse-glow 2s infinite; }
 
+        /* Progress Bar Styles */
+        .progress-container {
+            width: 100%; height: 6px; background: rgba(255,255,255,0.1); 
+            border-radius: 10px; margin: 20px 0; overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%; width: 0%; transition: width 1s linear;
+        }
+        .bg-live { background: linear-gradient(90deg, #00ff88, #00bd65); box-shadow: 0 0 10px #00ff88; }
+        .bg-waiting { background: linear-gradient(90deg, #ff9800, #ffd700); box-shadow: 0 0 10px #ff9800; }
+
         @keyframes pulse-glow {
             0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); }
             50% { box-shadow: 0 0 25px rgba(0, 255, 136, 0.4); }
             100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); }
         }
 
-        .live-name { font-family: 'Orbitron', sans-serif; font-size: 40px; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .live-timer { font-size: 70px; font-weight: bold; color: #00ff88; text-shadow: 0 0 30px rgba(0, 255, 136, 0.5); line-height: 1; margin: 10px 0; }
-
-        .next-name { font-family: 'Orbitron', sans-serif; font-size: 35px; color: #eee; }
+        .live-name, .next-name { font-family: 'Orbitron', sans-serif; font-size: 35px; color: #fff; }
+        .live-timer { font-size: 70px; font-weight: bold; color: #00ff88; text-shadow: 0 0 30px rgba(0, 255, 136, 0.5); line-height: 1; }
         .next-timer { font-size: 75px; font-weight: bold; color: #ff9800; text-shadow: 0 0 35px rgba(255, 152, 0, 0.4); line-height: 1; }
 
         .schedule-title { font-size: 12px; color: #555; margin: 40px 0 20px; text-transform: uppercase; letter-spacing: 4px; display: flex; align-items: center; }
@@ -69,13 +78,17 @@
         <div id="status-box" class="status-badge status-waiting">INITIALIZING...</div>
         
         <div id="active-events-container"></div>
+        
+        <!-- Η Μπάρα Προόδου -->
+        <div class="progress-container">
+            <div id="main-progress" class="progress-bar"></div>
+        </div>
 
         <div class="schedule-title">Full Schedule</div>
         <div id="grid-container" class="events-grid"></div>
     </div>
 
     <script>
-        // Προσθήκη Icons στα ονόματα
         const icons = {
             "Invasion": "⚔️",
             "Teddy Bears": "🧸",
@@ -123,7 +136,10 @@
                 let isLive = (now >= startTime && now <= endTime);
                 let diff = isLive ? (endTime - now) : (startTime - now);
 
-                return { ...e, startTime, endTime, isLive, diff };
+                // Υπολογισμός συνολικής διάρκειας για την μπάρα
+                let totalDuration = isLive ? (e.d * 60000) : (startTime - (new Date(startTime.getTime() - 3600000))); // Default 1 hour for next event gap
+                
+                return { ...e, startTime, endTime, isLive, diff, totalDuration };
             });
 
             processedEvents.sort((a, b) => a.diff - b.diff);
@@ -144,22 +160,30 @@
             });
             document.getElementById('grid-container').innerHTML = gridHtml;
 
-            // MAIN
+            // MAIN + PROGRESS BAR
             let container = document.getElementById('active-events-container');
             let statusBox = document.getElementById('status-box');
+            let progressBar = document.getElementById('main-progress');
 
             if (liveEvents.length > 0) {
+                let e = liveEvents[0];
                 statusBox.innerHTML = "EVENTS IN PROGRESS";
                 statusBox.className = "status-badge status-live";
-                let activeHtml = "";
-                liveEvents.forEach(e => {
-                    activeHtml += `<div><div class="live-name">${icons[e.n]} ${e.n}</div><div class="live-timer">${formatTime(e.diff)}</div></div>`;
-                });
-                container.innerHTML = activeHtml;
+                container.innerHTML = `<div><div class="live-name">${icons[e.n]} ${e.n}</div><div class="live-timer">${formatTime(e.diff)}</div></div>`;
+                
+                // Ποσοστό προόδου για Live (από 100% προς 0%)
+                let percentage = (e.diff / (e.d * 60000)) * 100;
+                progressBar.style.width = percentage + "%";
+                progressBar.className = "progress-bar bg-live";
             } else {
                 statusBox.innerHTML = "NEXT EVENT";
                 statusBox.className = "status-badge status-waiting";
                 container.innerHTML = `<div><div class="next-name">${icons[nextEvent.n]} ${nextEvent.n}</div><div class="next-timer">${formatTime(nextEvent.diff)}</div></div>`;
+                
+                // Ποσοστό προόδου για αναμονή (υποθετικό 1 ώρα max για το visual)
+                let percentage = 100 - Math.min(100, (nextEvent.diff / 3600000) * 100);
+                progressBar.style.width = percentage + "%";
+                progressBar.className = "progress-bar bg-waiting";
             }
         }
 
