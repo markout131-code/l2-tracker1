@@ -1,102 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L2 ADEN - MULTI TRACKER PRO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        body { 
-            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.95)), url('bg.jpeg');
-            background-size: cover; background-position: center; background-attachment: fixed;
-            background-color: #050505; color: #ffffff; font-family: 'Rajdhani', sans-serif;
-            display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;
-        }
-
-        .main-card {
-            background: rgba(18, 18, 24, 0.9);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            border-top: 5px solid #ffd700;
-            padding: 35px; border-radius: 25px; text-align: center;
-            width: 95%; max-width: 800px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
-        }
-
-        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 8px; margin: 0; font-size: 28px; }
-        #clock { color: #888; font-size: 13px; margin-bottom: 25px; letter-spacing: 2px; }
-
-        .status-badge {
-            display: inline-block; padding: 6px 20px; border-radius: 4px; font-size: 11px;
-            font-weight: bold; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 2px;
-        }
-        .status-waiting { border: 1px solid #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.05); }
-        .status-live { border: 1px solid #00ff88; color: #00ff88; background: rgba(0, 255, 136, 0.15); animation: pulse-glow 2s infinite; }
-
-        /* Progress Bar Styles */
-        .progress-container {
-            width: 100%; height: 6px; background: rgba(255,255,255,0.1); 
-            border-radius: 10px; margin: 10px 0 25px 0; overflow: hidden;
-        }
-        .progress-bar { height: 100%; width: 0%; transition: width 1s linear; }
-        .bg-live { background: linear-gradient(90deg, #00ff88, #00bd65); box-shadow: 0 0 10px #00ff88; }
-        .bg-waiting { background: linear-gradient(90deg, #ff9800, #ffd700); box-shadow: 0 0 10px #ff9800; }
-
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); }
-            50% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
-            100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); }
-        }
-
-        /* Event Row Styles */
-        .event-display-block { margin-bottom: 20px; }
-        .live-name, .next-name { font-family: 'Orbitron', sans-serif; font-size: 32px; color: #fff; }
-        .live-timer { font-size: 60px; font-weight: bold; color: #00ff88; text-shadow: 0 0 30px rgba(0, 255, 136, 0.5); line-height: 1; }
-        .next-timer { font-size: 65px; font-weight: bold; color: #ff9800; text-shadow: 0 0 35px rgba(255, 152, 0, 0.4); line-height: 1; }
-
-        .schedule-title { font-size: 12px; color: #555; margin: 40px 0 20px; text-transform: uppercase; letter-spacing: 4px; display: flex; align-items: center; }
-        .schedule-title::before, .schedule-title::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.05); margin: 0 15px; }
-
-        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .event-item { 
-            background: rgba(255, 255, 255, 0.02); padding: 15px 20px; border-radius: 12px; 
-            display: flex; justify-content: space-between; border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
-        }
-        .event-item:hover { background: rgba(255, 215, 0, 0.05); border-color: rgba(255, 215, 0, 0.2); transform: translateY(-2px); }
-        .active-row { border-color: #00ff88; background: rgba(0, 255, 136, 0.05); }
-        .event-label { color: #ddd; font-size: 15px; font-weight: 500; }
-        .event-time-info { color: #ffd700; font-weight: bold; font-family: monospace; font-size: 15px; }
-    </style>
-</head>
-<body>
-
-    <div class="main-card">
-        <h1>L2 ADEN EVENTS</h1>
-        <div id="clock">SERVER TIME: --:--:--</div>
-        
-        <div id="status-box" class="status-badge">INITIALIZING...</div>
-        
-        <!-- Εδώ θα μπαίνουν όλα τα Live events ή το Next -->
-        <div id="active-events-container"></div>
-
-        <div class="schedule-title">Full Schedule</div>
-        <div id="grid-container" class="events-grid"></div>
-    </div>
-
-    <script>
+<script>
         const icons = {
             "Invasion": "⚔️",
             "Teddy Bears": "🧸",
             "Catacombs": "💀",
             "Olympiad": "🏆",
             "Fortress": "🚩",
-            "Sieges": "🏰",
-            "Forest of Duels": "🛡️",
+            "Sieges": "🏰", // Προστέθηκε κόμμα εδώ
+            "Forest of Duels": "🤺",
             "Mafia's Hideout": "🕵️‍♂️",
-            "Iron Depot": "⛓️",
-            "Boss Subjugation": "👹" 
-            
+            "Iron Depot": "🏗️",
+            "Boss Subjugation": "👹"
         };
 
         const eventsList = [
@@ -109,10 +22,10 @@
             { n: "Catacombs", t: "01:00", d: 60 }, 
             { n: "Olympiad", t: "02:00", d: 30 },
             { n: "Fortress", t: "22:50", d: 15 }, 
-            { n: "Sieges", t: "01:00", d: 60 }
-            { n: "Forest of Duels", t: "23:30", d: 30 }
-            { n: "Mafia's Hideout", t: "00:00", d: 30 }
-            { n: "Iron Depot", t: "22:00", d: 15 }
+            { n: "Sieges", t: "01:00", d: 60 }, // Προστέθηκε κόμμα εδώ
+            { n: "Forest of Duels", t: "23:30", d: 30 }, // Προστέθηκε κόμμα εδώ
+            { n: "Mafia's Hideout", t: "00:00", d: 30 }, // Προστέθηκε κόμμα εδώ
+            { n: "Iron Depot", t: "22:00", d: 15 }, // Προστέθηκε κόμμα εδώ
             { n: "Boss Subjugation", t: "22:20", d: 25 }
         ];
 
@@ -125,17 +38,23 @@
 
         function update() {
             const now = new Date();
-            document.getElementById('clock').innerHTML = "SERVER TIME: " + now.toLocaleTimeString('en-US', { hour12: true });
+            
+            // Εμφάνιση Server Time σε UTC (για να ταυτίζεται με το παιχνίδι)
+            const serverTimeStr = now.toLocaleTimeString('en-GB', { timeZone: 'UTC', hour12: false });
+            document.getElementById('clock').innerHTML = "SERVER TIME (UTC): " + serverTimeStr;
 
             let processedEvents = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
                 let startTime = new Date();
-                startTime.setUTCHours(h - 3, m, 0, 0); 
+                
+                // Ρυθμίζουμε την ώρα απευθείας σε UTC
+                startTime.setUTCHours(h, m, 0, 0); 
                 let endTime = new Date(startTime.getTime() + e.d * 60000);
 
+                // Αν το event έληξε, πάμε στην επόμενη μέρα
                 if (now > endTime) {
-                    startTime.setDate(startTime.getDate() + 1);
-                    endTime.setDate(endTime.getDate() + 1);
+                    startTime.setUTCDate(startTime.getUTCDate() + 1);
+                    endTime.setUTCDate(endTime.getUTCDate() + 1);
                 }
 
                 let isLive = (now >= startTime && now <= endTime);
@@ -144,6 +63,7 @@
                 return { ...e, startTime, endTime, isLive, diff };
             });
 
+            // Ταξινόμηση ώστε το επόμενο χρονικά να είναι πρώτο
             processedEvents.sort((a, b) => a.diff - b.diff);
 
             let liveEvents = processedEvents.filter(e => e.isLive);
@@ -172,10 +92,11 @@
                 statusBox.className = "status-badge status-live";
                 
                 liveEvents.forEach(e => {
-                    let percentage = (e.diff / (e.d * 60000)) * 100;
+                    let totalDuration = e.d * 60000;
+                    let percentage = (e.diff / totalDuration) * 100;
                     activeHtml += `
                         <div class="event-display-block">
-                            <div class="live-name">${icons[e.n]} ${e.n}</div>
+                            <div class="live-name">${icons[e.n] || ''} ${e.n}</div>
                             <div class="live-timer">${formatTime(e.diff)}</div>
                             <div class="progress-container">
                                 <div class="progress-bar bg-live" style="width: ${percentage}%"></div>
@@ -183,15 +104,14 @@
                         </div>
                     `;
                 });
-            } else {
+            } else if (nextEvent) {
                 statusBox.innerHTML = "NEXT EVENT";
                 statusBox.className = "status-badge status-waiting";
                 
-                // Υπολογισμός μπάρας για το επόμενο event (π.χ. αντίστροφη μέτρηση 1 ώρας max για το visual)
                 let percentage = 100 - Math.min(100, (nextEvent.diff / 3600000) * 100);
                 activeHtml = `
                     <div class="event-display-block">
-                        <div class="next-name">${icons[nextEvent.n]} ${nextEvent.n}</div>
+                        <div class="next-name">${icons[nextEvent.n] || ''} ${nextEvent.n}</div>
                         <div class="next-timer">${formatTime(nextEvent.diff)}</div>
                         <div class="progress-container">
                             <div class="progress-bar bg-waiting" style="width: ${percentage}%"></div>
@@ -205,5 +125,3 @@
         setInterval(update, 1000);
         update();
     </script>
-</body>
-</html>
