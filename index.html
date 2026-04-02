@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,7 +55,6 @@
             100% { transform: scale(1); }
         }
 
-        /* Κεντρικό Container για τα Active Events */
         #active-events-container {
             margin-bottom: 30px;
             display: flex;
@@ -73,7 +72,6 @@
         .live-name { font-size: 32px; font-weight: 900; text-transform: uppercase; display: block; }
         .live-timer { font-size: 50px; font-weight: bold; font-family: 'Courier New', monospace; color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
 
-        /* Στυλ για όταν δεν υπάρχει Live */
         .next-name { font-size: 35px; font-weight: 900; color: #fff; text-transform: uppercase; }
         .next-timer { font-size: 70px; font-weight: bold; font-family: 'Courier New', monospace; color: #ff9800; text-shadow: 0 0 30px rgba(255, 152, 0, 0.4); }
 
@@ -91,9 +89,8 @@
         <h1>L2 ADEN EVENTS</h1>
         <div id="clock">SERVER TIME: 00:00:00</div>
         
-        <div id="status-box" class="status-badge status-waiting">ΦΟΡΤΩΣΗ...</div>
+        <div id="status-box" class="status-badge status-waiting">LOADING...</div>
         
-        <!-- Εδώ θα μπαίνουν τα Live ή το Next event -->
         <div id="active-events-container"></div>
 
         <div class="schedule-title">Full Schedule</div>
@@ -106,8 +103,8 @@
             { n: "Invasion", t: "16:00", d: 30 },
             { n: "Invasion", t: "20:00", d: 30 }, 
             { n: "Invasion", t: "00:00", d: 30 },
-            { n: "Τeddy bears", t: "12:10", d: 15 }, 
-            { n: "Τeddy bears", t: "23:45", d: 15 },
+            { n: "Teddy Bears", t: "12:10", d: 15 }, 
+            { n: "Teddy Bears", t: "23:45", d: 15 },
             { n: "Catacombs", t: "01:00", d: 60 }, 
             { n: "Olympiad", t: "02:00", d: 30 },
             { n: "Fortress", t: "04:00", d: 15 }, 
@@ -123,22 +120,18 @@
 
         function update() {
             const now = new Date();
-            document.getElementById('clock').innerHTML = "SERVER TIME: " + now.toLocaleTimeString('el-GR');
+            // Αλλαγή σε 'en-US' για να φαίνεται AM/PM στο ρολόι
+            document.getElementById('clock').innerHTML = "SERVER TIME: " + now.toLocaleTimeString('en-US');
 
             let processedEvents = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
-                
-                // Δημιουργούμε την ώρα του event σε ώρα Ελλάδος (UTC+3)
                 let startTime = new Date();
                 
-                // Υπολογίζουμε τη διαφορά της τοπικής ώρας από την ώρα Ελλάδος
-                // Η Ελλάδα είναι UTC+3 (το καλοκαίρι). 
-                // Χρησιμοποιούμε το .setUTCHours(h - 3, m, 0, 0) για να κλειδώσουμε την ώρα Ελλάδος.
+                // Κλειδωμένο σε ώρα Ελλάδος (UTC+3)
                 startTime.setUTCHours(h - 3, m, 0, 0); 
 
                 let endTime = new Date(startTime.getTime() + e.d * 60000);
 
-                // Αν το event πέρασε για σήμερα, πάμε στην επόμενη μέρα
                 if (now > endTime) {
                     startTime.setDate(startTime.getDate() + 1);
                     endTime.setDate(endTime.getDate() + 1);
@@ -159,15 +152,13 @@
             let liveEvents = processedEvents.filter(e => e.isLive);
             let nextEvent = processedEvents.find(e => !e.isLive);
 
-            // 1. UPDATE ΤΟΥ GRID (Κάτω μέρος)
             let gridHtml = "";
             processedEvents.forEach((e) => {
-                let timeDisplay = e.isLive ? "EXPIRES IN: " + formatTime(e.diff) : formatTime(e.diff);
+                let timeDisplay = e.isLive ? "ENDS IN: " + formatTime(e.diff) : formatTime(e.diff);
                 gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}"><span class="event-label">${e.n}</span><span class="event-time-info">${timeDisplay}</span></div>`;
             });
             document.getElementById('grid-container').innerHTML = gridHtml;
 
-            // 2. UPDATE ΤΗΣ ΚΕΝΤΡΙΚΗΣ ΟΘΟΝΗΣ
             let container = document.getElementById('active-events-container');
             let statusBox = document.getElementById('status-box');
 
@@ -186,7 +177,7 @@
                 });
                 container.innerHTML = activeHtml;
             } else {
-                statusBox.innerHTML = "ΕΠΟΜΕΝΟ EVENT";
+                statusBox.innerHTML = "NEXT EVENT";
                 statusBox.className = "status-badge status-waiting";
                 container.innerHTML = `
                     <div class="next-event-row">
