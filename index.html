@@ -3,38 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L2 ADEN - SECURE TRACKER</title>
+    <title>L2 ADEN - UNIVERSAL TRACKER</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
+        /* --- GLOBAL STYLE --- */
+        body { 
+            background-color: #050505; 
+            margin: 0;
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), 
+                        url('bg.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- ΚΟΙΝΟ ΣΤΥΛ ΓΙΑ LOGIN & APP --- */
+        .glass-panel {
+            background: rgba(18, 18, 24, 0.92);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-top: 5px solid #ffd700;
+            padding: 40px; 
+            border-radius: 25px; 
+            text-align: center;
+            width: 95%; 
+            max-width: 600px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
         /* --- LOGIN OVERLAY --- */
         #login-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #050505;
             display: flex; justify-content: center; align-items: center;
             z-index: 10000;
             transition: 0.6s ease-in-out;
+            background: inherit; /* Παίρνει το background του body */
         }
 
-        .login-box {
-            text-align: center;
-            background: rgba(15, 15, 20, 0.98);
-            padding: 50px;
-            border-radius: 30px;
-            border: 2px solid #ffd700;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        /* ΚΑΘΑΡΑ ΚΑΙ ΕΥΑΝΑΓΝΩΣΤΑ ΓΡΑΜΜΑΤΑ */
         .secure-text {
-            color: #ffffff; /* Άσπρο για μέγιστη αντίθεση */
+            color: #ffffff;
             font-size: 13px;
             margin-bottom: 25px;
             letter-spacing: 2px;
             text-transform: uppercase;
-            font-weight: 700; /* Έντονα γράμματα */
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            font-weight: 700;
             display: block;
         }
 
@@ -61,39 +77,10 @@
             text-transform: uppercase;
         }
 
-        .shake { animation: shake 0.4s ease-in-out; border-color: #ff4444 !important; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            50% { transform: translateX(8px); }
-            75% { transform: translateX(-8px); }
-        }
-
         /* --- MAIN APP --- */
-        body { 
-            background-color: #050505; 
-            margin: 0;
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), 
-                        url('bg.jpeg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            font-family: 'Rajdhani', sans-serif;
-        }
+        #app { display: none; }
 
-        .main-card {
-            background: rgba(18, 18, 24, 0.92);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            border-top: 5px solid #ffd700;
-            padding: 30px; border-radius: 25px; text-align: center;
-            width: 95%; max-width: 650px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            display: none;
-        }
-
-        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; }
+        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; margin-top: 0; }
         #clock { color: #888; font-family: monospace; margin-bottom: 20px; font-size: 14px; }
         .live-timer { font-size: 60px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); }
         .next-timer { font-size: 60px; font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255,152,0,0.3); }
@@ -105,23 +92,31 @@
         }
         .active-row { border-color: #00ff88; background: rgba(0, 255, 136, 0.05); }
 
+        .shake { animation: shake 0.4s ease-in-out; border-color: #ff4444 !important; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            75% { transform: translateX(-8px); }
+        }
+
         @media (max-width: 500px) { .events-grid { grid-template-columns: 1fr; } .live-timer, .next-timer { font-size: 45px; } }
     </style>
 </head>
 <body>
 
+    <!-- LOGIN -->
     <div id="login-overlay">
-        <div class="login-box">
+        <div class="glass-panel">
             <h2 style="color:#ffd700; margin-bottom:5px; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
-            <!-- ΚΑΘΑΡΟ ΚΕΙΜΕΝΟ ΧΩΡΙΣ ΘΟΛΟΥΡΑ -->
             <span class="secure-text">IDENTITY VERIFICATION REQUIRED</span>
-            
             <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off">
             <div id="status-msg">READY FOR INPUT</div>
         </div>
     </div>
 
-    <div class="main-card" id="app">
+    <!-- MAIN APP -->
+    <div class="glass-panel" id="app">
         <h1>ADEN TRACKER</h1>
         <div id="clock">LOCAL TIME: 00:00:00</div>
         <div id="active-display"></div>
@@ -133,10 +128,9 @@
         const inputField = document.getElementById('passInput');
         const statusMsg = document.getElementById('status-msg');
 
+        // LOGIN LOGIC
         inputField.addEventListener('input', function() {
-            const val = this.value;
-
-            if(val === SECRET) {
+            if(this.value === SECRET) {
                 statusMsg.innerText = "ACCESS GRANTED";
                 statusMsg.style.color = "#00ff88";
                 this.style.borderColor = "#00ff88";
@@ -150,7 +144,7 @@
                     }, 600);
                 }, 200);
             } 
-            else if (val.length >= 6) {
+            else if (this.value.length >= 6) {
                 statusMsg.innerText = "ACCESS DENIED - INVALID KEY";
                 statusMsg.style.color = "#ff4444";
                 this.classList.add('shake');
@@ -163,8 +157,11 @@
             }
         });
 
+        // TRACKER & TIMEZONE LOGIC
         const icons = { "Invasion": "⚔️", "Teddy Bears": "🧸", "Catacombs": "💀", "Olympiad": "🏆", "Fortress": "🚩", "Sieges": "🏰", "Forest of Duels": "🤺", "Mafia's Hideout": "🕵️‍♂️", "Iron Depot": "🏗️", "Boss Subjugation": "👹" };
         
+        // Οι ώρες είναι σε ώρα Ελλάδος (GMT+3 ή GMT+2 ανάλογα την εποχή)
+        // Ο κώδικας θα υπολογίσει τη διαφορά αυτόματα
         const eventsList = [
             { n: "Invasion", t: "15:40", d: 30 }, { n: "Invasion", t: "19:40", d: 30 }, { n: "Invasion", t: "23:40", d: 30 }, { n: "Invasion", t: "03:40", d: 30 },
             { n: "Teddy Bears", t: "13:00", d: 15 }, { n: "Teddy Bears", t: "00:00", d: 15 }, { n: "Olympiad", t: "02:00", d: 30 }, { n: "Fortress", t: "22:00", d: 20 }, 
@@ -178,17 +175,42 @@
             return String(hh).padStart(2,'0') + ":" + String(mm).padStart(2,'0') + ":" + String(ss).padStart(2,'0');
         }
 
+        function getGreekTime() {
+            // Δημιουργούμε μια ημερομηνία που δείχνει πάντα την τρέχουσα ώρα Ελλάδος
+            return new Date(new Date().toLocaleString("en-US", {timeZone: "Europe/Athens"}));
+        }
+
         function update() {
-            const now = new Date();
-            document.getElementById('clock').innerText = "LOCAL TIME: " + now.toLocaleTimeString('en-GB');
+            const nowLocal = new Date();
+            const nowGreek = getGreekTime();
+            
+            // Υπολογίζουμε τη διαφορά (offset) μεταξύ Ελλάδος και τοπικής ώρας χρήστη
+            const timeDiff = nowGreek.getTime() - nowLocal.getTime();
+
+            document.getElementById('clock').innerText = "YOUR LOCAL TIME: " + nowLocal.toLocaleTimeString('en-GB');
 
             let processed = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
-                let start = new Date(now); start.setHours(h, m, 0, 0);
-                let end = new Date(start.getTime() + e.d * 60000);
-                if (now > end) { start.setDate(start.getDate() + 1); end.setDate(end.getDate() + 1); }
-                let isLive = (now >= start && now <= end);
-                let diff = isLive ? (end - now) : (start - now);
+                
+                // Φτιάχνουμε το event με βάση την ώρα Ελλάδος
+                let startGreek = new Date(nowGreek);
+                startGreek.setHours(h, m, 0, 0);
+                
+                let endGreek = new Date(startGreek.getTime() + e.d * 60000);
+
+                // Αν το event πέρασε για σήμερα στην Ελλάδα, πάμε στην επόμενη μέρα
+                if (nowGreek > endGreek) {
+                    startGreek.setDate(startGreek.getDate() + 1);
+                    endGreek.setDate(endGreek.getDate() + 1);
+                }
+
+                // Μετατρέπουμε την ώρα Ελλάδος σε τοπική ώρα χρήστη για το χρονόμετρο
+                let startLocal = new Date(startGreek.getTime() - timeDiff);
+                let endLocal = new Date(endGreek.getTime() - timeDiff);
+
+                let isLive = (nowLocal >= startLocal && nowLocal <= endLocal);
+                let diff = isLive ? (endLocal - nowLocal) : (startLocal - nowLocal);
+
                 return { ...e, isLive, diff };
             });
 
