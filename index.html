@@ -10,14 +10,14 @@
         body { 
             background-color: #050505; 
             margin: 0;
-            display: flex; justify-content: center; align-items: center; 
+            display: flex; justify-content: center; align-items: flex-start; /* Αλλαγή για να ξεκινάει από πάνω */
             min-height: 100vh;
             background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), 
                         url('bg.jpeg') no-repeat center center fixed;
             background-size: cover;
             color: white;
             font-family: 'Rajdhani', sans-serif;
-            overflow: hidden;
+            overflow-y: auto; /* ΕΠΕΤΡΕΨΕ ΤΟ SCROLL */
         }
 
         .glass-panel {
@@ -25,98 +25,68 @@
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 215, 0, 0.2);
             border-top: 5px solid #ffd700;
-            padding: 40px; 
+            padding: 30px; /* Λίγο πιο compact */
             border-radius: 25px; 
             text-align: center;
             width: 95%; 
             max-width: 600px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             position: relative;
+            margin: 40px 10px; /* Περιθώριο πάνω-κάτω για το scroll */
         }
 
-        /* --- NEW DYNAMIC LOADING BAR --- */
-        #loader-container { 
-            display: none; 
-            margin-top: 25px; 
-            text-align: center;
-        }
-        .loader-track { 
-            width: 100%; 
-            height: 20px; /* Πιο παχιά μπάρα για να φαίνεται το κείμενο */
-            background: rgba(255, 255, 255, 0.05); 
-            border-radius: 4px; 
-            overflow: hidden; 
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            position: relative;
-        }
-        .loader-fill { 
-            width: 0%; 
-            height: 100%; 
-            background: linear-gradient(90deg, #b8860b, #ffd700); 
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); 
-            transition: width 0.1s linear; /* Πολύ γρήγορη ανανέωση για να φαίνεται ομαλό */
-        }
-        .percentage-text {
-            position: absolute;
-            width: 100%;
-            top: 0; left: 0;
-            line-height: 20px;
-            font-size: 12px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            color: white;
-            text-shadow: 1px 1px 2px black;
-            z-index: 2;
-        }
+        /* --- LOADING BAR --- */
+        #loader-container { display: none; margin-top: 20px; text-align: center; }
+        .loader-track { width: 100%; height: 18px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; overflow: hidden; border: 1px solid rgba(255, 215, 0, 0.3); position: relative; }
+        .loader-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #b8860b, #ffd700); transition: width 0.1s linear; }
+        .percentage-text { position: absolute; width: 100%; top: 0; left: 0; line-height: 18px; font-size: 11px; font-family: 'Orbitron', sans-serif; font-weight: bold; color: white; z-index: 2; }
 
         /* --- LOGIN --- */
-        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10000; background: inherit; transition: opacity 0.8s ease; }
-        .secure-text { color: #ffffff; font-size: 13px; margin-bottom: 25px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; display: block; }
-        input[type="password"] { background: #000; border: 2px solid #ffd700; padding: 15px; color: #ffd700; text-align: center; width: 260px; border-radius: 8px; outline: none; font-size: 35px; letter-spacing: 12px; }
-        #status-msg { color: #ffd700; font-size: 11px; margin-top: 20px; font-weight: bold; letter-spacing: 2px; height: 15px; }
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10000; background: #050505; transition: opacity 0.8s ease; }
+        .secure-text { color: #ffffff; font-size: 12px; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; display: block; }
+        input[type="password"] { background: #000; border: 2px solid #ffd700; padding: 12px; color: #ffd700; text-align: center; width: 220px; border-radius: 8px; outline: none; font-size: 30px; letter-spacing: 10px; }
+        #status-msg { color: #ffd700; font-size: 11px; margin-top: 15px; font-weight: bold; letter-spacing: 1px; }
 
         /* --- MAIN APP --- */
         #app { display: none; opacity: 0; transition: opacity 1s ease; }
-        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; }
-        #clock { color: #888; font-family: monospace; margin-bottom: 20px; font-size: 14px; }
+        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 3px; margin-bottom: 2px; font-size: 24px; }
+        #clock { color: #888; font-family: monospace; margin-bottom: 15px; font-size: 13px; }
         
-        .live-timer { font-size: 60px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); }
-        .next-timer { font-size: 60px; font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255,152,0,0.3); }
+        .live-timer { font-size: 50px; font-weight: bold; color: #00ff88; text-shadow: 0 0 15px rgba(0,255,136,0.4); }
+        .next-timer { font-size: 50px; font-weight: bold; color: #ff9800; text-shadow: 0 0 15px rgba(255,152,0,0.3); }
 
-        .section-title { font-family: 'Orbitron', sans-serif; color: #ffd700; font-size: 14px; letter-spacing: 3px; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 215, 0, 0.3); display: inline-block; padding-bottom: 5px; }
-        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .event-item { background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s ease; }
-        .event-item:hover { background: rgba(255, 215, 0, 0.1); border-color: #ffd700; transform: scale(1.02); }
+        .section-title { font-family: 'Orbitron', sans-serif; color: #ffd700; font-size: 13px; letter-spacing: 2px; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(255, 215, 0, 0.3); display: inline-block; padding-bottom: 4px; }
+        
+        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .event-item { background: rgba(255, 255, 255, 0.03); padding: 10px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s ease; }
+        .event-item:hover { background: rgba(255, 215, 0, 0.1); border-color: #ffd700; transform: translateY(-2px); }
         .active-row { border-color: #00ff88 !important; background: rgba(0, 255, 136, 0.08) !important; }
-        .event-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-        .event-countdown { color: #ffd700; font-family: monospace; font-size: 16px; font-weight: bold; }
-        .event-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+        
+        .event-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+        .event-countdown { color: #ffd700; font-family: monospace; font-size: 15px; font-weight: bold; }
+        .event-label { font-size: 9px; color: #777; text-transform: uppercase; margin-top: 2px; }
 
         .shake { animation: shake 0.4s; border-color: #ff4444 !important; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-8px); } }
 
-        @media (max-width: 500px) { .events-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 500px) { .events-grid { grid-template-columns: 1fr; } .live-timer, .next-timer { font-size: 40px; } }
     </style>
 </head>
 <body>
 
     <div id="login-overlay">
         <div class="glass-panel">
-            <h2 style="color:#ffd700; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
-            <span class="secure-text">IDENTITY VERIFICATION REQUIRED</span>
-            
+            <h2 style="color:#ffd700; font-size:17px; letter-spacing:3px; margin-top:0;">SYSTEM ACCESS</h2>
+            <span class="secure-text">IDENTITY VERIFICATION</span>
             <div id="input-area">
                 <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off">
             </div>
-
-            <!-- Η ΜΠΑΡΑ ΜΕ ΤΟ ΠΟΣΟΣΤΟ -->
             <div id="loader-container">
                 <div class="loader-track">
                     <div class="percentage-text" id="percent">0%</div>
                     <div class="loader-fill" id="fill"></div>
                 </div>
             </div>
-
             <div id="status-msg">READY FOR INPUT</div>
         </div>
     </div>
@@ -127,7 +97,7 @@
         <div id="active-display"></div>
         <div class="section-title">TIMES FOR EVENTS</div>
         <div class="events-grid" id="grid"></div>
-        <div style="font-size: 10px; color: #555; margin-top: 20px; letter-spacing: 1px;">* ALL TIMES ARE AUTOMATICALLY ADJUSTED TO YOUR LOCAL TIMEZONE</div>
+        <div style="font-size: 10px; color: #555; margin-top: 20px; letter-spacing: 1px;">* AUTO-ADJUSTED TO YOUR LOCAL TIMEZONE</div>
     </div>
 
     <script>
@@ -141,45 +111,28 @@
 
         document.getElementById('passInput').addEventListener('input', function() {
             if(this.value === SECRET) {
-                const inputArea = document.getElementById('input-area');
-                const loader = document.getElementById('loader-container');
-                const fill = document.getElementById('fill');
-                const percentText = document.getElementById('percent');
-                const status = document.getElementById('status-msg');
-
-                inputArea.style.display = 'none';
-                loader.style.display = 'block';
-                status.innerText = "SYNCHRONIZING WITH SERVER...";
-
+                document.getElementById('input-area').style.display = 'none';
+                document.getElementById('loader-container').style.display = 'block';
+                document.getElementById('status-msg').innerText = "SYNCHRONIZING...";
                 let width = 0;
-                // Animation για το ποσοστό και τη μπάρα
                 let interval = setInterval(() => {
                     if (width >= 100) {
                         clearInterval(interval);
-                        status.innerText = "ACCESS GRANTED";
-                        status.style.color = "#00ff88";
-                        
+                        document.getElementById('login-overlay').style.opacity = '0';
                         setTimeout(() => {
-                            document.getElementById('login-overlay').style.opacity = '0';
-                            setTimeout(() => {
-                                document.getElementById('login-overlay').style.display = 'none';
-                                const app = document.getElementById('app');
-                                app.style.display = 'block';
-                                setTimeout(() => app.style.opacity = '1', 50);
-                                setInterval(update, 1000);
-                                update();
-                            }, 600);
-                        }, 400);
+                            document.getElementById('login-overlay').style.display = 'none';
+                            const app = document.getElementById('app');
+                            app.style.display = 'block';
+                            setTimeout(() => app.style.opacity = '1', 50);
+                            setInterval(update, 1000);
+                            update();
+                        }, 600);
                     } else {
                         width++;
-                        fill.style.width = width + '%';
-                        percentText.innerText = width + '%';
-                        
-                        if(width === 40) status.innerText = "LOADING DATABASE...";
-                        if(width === 75) status.innerText = "FINALIZING CONNECTION...";
+                        document.getElementById('fill').style.width = width + '%';
+                        document.getElementById('percent').innerText = width + '%';
                     }
-                }, 20); // Ταχύτητα φόρτωσης
-
+                }, 15);
             } else if (this.value.length >= 6) {
                 this.classList.add('shake');
                 setTimeout(() => { this.classList.remove('shake'); this.value = ""; }, 500);
@@ -197,7 +150,7 @@
             const nowLocal = new Date();
             const nowGreek = new Date(new Date().toLocaleString("en-US", {timeZone: "Europe/Athens"}));
             const timeDiff = nowGreek.getTime() - nowLocal.getTime();
-            document.getElementById('clock').innerText = "YOUR LOCAL TIME: " + nowLocal.toLocaleTimeString('en-GB');
+            document.getElementById('clock').innerText = "LOCAL: " + nowLocal.toLocaleTimeString('en-GB');
 
             let processed = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
@@ -211,14 +164,4 @@
 
             let gridHtml = "";
             processed.forEach(e => {
-                gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}"><span class="event-name">${icons[e.n] || ''} ${e.n}</span><span class="event-countdown">${e.isLive ? 'LIVE NOW' : formatTime(e.diff)}</span><span class="event-label">${e.isLive ? 'ENDS IN' : 'TIME TO START'}</span></div>`;
-            });
-            document.getElementById('grid').innerHTML = gridHtml;
-
-            let live = processed.filter(e => e.isLive)[0] || processed[0];
-            let isLive = processed.some(e => e.isLive);
-            document.getElementById('active-display').innerHTML = `<div style="color:${isLive ? '#00ff88' : '#ff9800'}; font-size:12px; font-weight:bold; letter-spacing:2px;">${isLive ? 'EVENT LIVE' : 'UPCOMING'}</div><div style="font-size:28px; font-family:Orbitron; margin: 10px 0;">${live.n}</div><div class="${isLive ? 'live-timer' : 'next-timer'}">${formatTime(live.diff)}</div>`;
-        }
-    </script>
-</body>
-</html>
+                gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}"><span class="event-name">${icons[e.n] || ''} ${e.n}</span><span class="event-countdown">${e
