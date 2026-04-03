@@ -22,24 +22,20 @@
             padding: 50px;
             border-radius: 30px;
             border: 2px solid #ffd700;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
             font-family: 'Orbitron', sans-serif;
         }
 
-        /* ΤΟ ΕΦΕ ΣΤΑ ΓΡΑΜΜΑΤΑ ΠΟΥ ΔΕΝ ΔΙΑΒΑΖΟΝΤΑΙ */
-        .encrypted-text {
-            color: #666;
-            font-size: 10px;
+        /* ΚΑΘΑΡΑ ΚΑΙ ΕΥΑΝΑΓΝΩΣΤΑ ΓΡΑΜΜΑΤΑ */
+        .secure-text {
+            color: #ffffff; /* Άσπρο για μέγιστη αντίθεση */
+            font-size: 13px;
             margin-bottom: 25px;
-            letter-spacing: 5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            filter: blur(3px); /* Θόλωση για να μην διαβάζεται εύκολα */
-            transition: filter 0.5s;
-            user-select: none;
-        }
-
-        .login-box:hover .encrypted-text {
-            filter: blur(1.5px); /* Ξεθολώνει λίγο όταν πας κοντά */
+            font-weight: 700; /* Έντονα γράμματα */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            display: block;
         }
 
         input[type="password"] {
@@ -57,7 +53,7 @@
         }
 
         #status-msg {
-            color: #444;
+            color: #ffd700;
             font-size: 11px;
             margin-top: 20px;
             font-weight: bold;
@@ -117,11 +113,11 @@
     <div id="login-overlay">
         <div class="login-box">
             <h2 style="color:#ffd700; margin-bottom:5px; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
-            <!-- ΕΔΩ ΕΙΝΑΙ ΤΟ ΚΕΙΜΕΝΟ ΠΟΥ ΔΕΝ ΔΙΑΒΑΖΕΤΑΙ ΕΥΚΟΛΑ -->
-            <p class="encrypted-text">IDENTITY VERIFICATION REQUIRED</p>
+            <!-- ΚΑΘΑΡΟ ΚΕΙΜΕΝΟ ΧΩΡΙΣ ΘΟΛΟΥΡΑ -->
+            <span class="secure-text">IDENTITY VERIFICATION REQUIRED</span>
             
             <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off">
-            <div id="status-msg">WAITING FOR KEY...</div>
+            <div id="status-msg">READY FOR INPUT</div>
         </div>
     </div>
 
@@ -161,8 +157,8 @@
                 setTimeout(() => {
                     this.classList.remove('shake');
                     this.value = "";
-                    statusMsg.innerText = "WAITING FOR KEY...";
-                    statusMsg.style.color = "#444";
+                    statusMsg.innerText = "READY FOR INPUT";
+                    statusMsg.style.color = "#ffd700";
                 }, 600);
             }
         });
