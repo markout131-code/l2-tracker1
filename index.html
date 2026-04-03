@@ -17,47 +17,36 @@
             background-size: cover;
             color: white;
             font-family: 'Rajdhani', sans-serif;
-            overflow-y: auto; /* Επιτρέπει το Scroll */
+            overflow-y: auto;
         }
 
         .glass-panel {
             background: rgba(18, 18, 24, 0.92);
             backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 215, 0, 0.2);
             border-top: 5px solid #ffd700;
-            padding: 30px; 
+            padding: 20px; /* Μειωμένο padding για κινητά */
             border-radius: 25px; 
             text-align: center;
-            width: 90%; 
-            max-width: 600px;
+            width: 95%; 
+            max-width: 800px; /* Αυξήθηκε για καλύτερη εμφάνιση σε PC */
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            margin: 40px auto; 
+            margin: 20px auto; 
+            box-sizing: border-box;
         }
 
-        /* --- LOADING BAR --- */
-        #loader-container { display: none; margin-top: 25px; position: relative; }
-        .loader-track { width: 100%; height: 22px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 215, 0, 0.3); position: relative; }
-        .loader-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #b8860b, #ffd700); transition: width 0.05s linear; }
-        .percentage-text { position: absolute; width: 100%; top: 0; left: 0; line-height: 22px; font-size: 12px; font-family: 'Orbitron', sans-serif; font-weight: bold; color: white; z-index: 5; text-shadow: 1px 1px 2px black; }
-
         /* --- LOGIN OVERLAY --- */
-        /* --- LOGIN OVERLAY --- */
-#login-overlay { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 10000; 
-    /* Αντί για σκέτο μαύρο, βάζουμε το background με το gradient */
-    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), 
-                url('bg.jpeg') no-repeat center center fixed;
-    background-size: cover;
-    transition: opacity 0.8s ease; 
-}
+        #login-overlay { 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            display: flex; justify-content: center; align-items: center; 
+            z-index: 10000; 
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), 
+                        url('bg.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            transition: opacity 0.8s ease; 
+        }
         
         input[type="password"] { 
             background: #000; 
@@ -65,64 +54,73 @@
             padding: 15px; 
             color: #ffd700; 
             text-align: center; 
-            width: 240px; 
+            width: 80%; /* Responsive πλάτος */
+            max-width: 280px;
             border-radius: 8px; 
             outline: none; 
-            font-size: 32px; 
-            letter-spacing: 12px; 
+            font-size: 28px; 
+            letter-spacing: 10px; 
             transition: all 0.3s ease;
         }
 
-        /* Επιτυχία: Πράσινο πλαίσιο χωρίς κίνηση */
-        .success-border {
-            border-color: #00ff88 !important;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6) !important;
-            color: #00ff88 !important;
-        }
+        /* --- LOADING BAR --- */
+        #loader-container { display: none; margin-top: 25px; position: relative; width: 100%; }
+        .loader-track { width: 100%; height: 22px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 215, 0, 0.3); position: relative; }
+        .loader-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #b8860b, #ffd700); transition: width 0.05s linear; }
+        .percentage-text { position: absolute; width: 100%; top: 0; left: 0; line-height: 22px; font-size: 12px; font-family: 'Orbitron', sans-serif; font-weight: bold; color: white; z-index: 5; text-shadow: 1px 1px 2px black; }
 
-        /* Λάθος: Κίνηση Shake */
+        /* --- EFFECTS --- */
+        .success-border { border-color: #00ff88 !important; box-shadow: 0 0 20px rgba(0, 255, 136, 0.6) !important; color: #00ff88 !important; }
         .shake { animation: shake 0.4s; border-color: #ff4444 !important; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-8px); } }
 
-        #status-msg { color: #ffd700; font-size: 11px; margin-top: 20px; font-weight: bold; letter-spacing: 2px; height: 15px; }
-
-        /* --- MAIN APP --- */
+        /* --- MAIN APP CONTENT --- */
         #app { display: none; opacity: 0; transition: opacity 1s ease; width: 100%; }
-        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; font-size: 26px; }
-        #clock { color: #888; font-family: monospace; margin-bottom: 20px; font-size: 14px; }
         
-        .live-timer { font-size: 55px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); margin: 10px 0; }
-        .next-timer { font-size: 55px; font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255,152,0,0.3); margin: 10px 0; }
+        .live-timer { font-size: clamp(30px, 8vw, 55px); font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); margin: 10px 0; }
+        .next-timer { font-size: clamp(30px, 8vw, 55px); font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255,152,0,0.3); margin: 10px 0; }
 
-        .section-title { font-family: 'Orbitron', sans-serif; color: #ffd700; font-size: 14px; letter-spacing: 3px; margin-top: 35px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 215, 0, 0.3); display: inline-block; padding-bottom: 5px; }
+        .events-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Αυτόματες στήλες ανάλογα με το πλάτος */
+            gap: 15px; 
+            margin-top: 20px;
+        }
 
-        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .event-item { 
             background: rgba(255, 255, 255, 0.03); 
-            padding: 12px; 
+            padding: 15px; 
             border-radius: 12px; 
-            display: flex; 
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
             border: 1px solid rgba(255,255,255,0.05);
             transition: all 0.2s ease;
         }
-        .event-item:hover { background: rgba(255, 215, 0, 0.1); border-color: #ffd700; transform: translateY(-3px); }
+
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 600px) {
+            .glass-panel { padding: 15px; margin: 10px auto; width: 98%; }
+            .events-grid { grid-template-columns: 1fr; } /* Μία στήλη στα πολύ μικρά κινητά */
+            h1 { font-size: 20px; }
+            .section-title { font-size: 12px; }
+        }
+
+        @media (min-width: 1024px) {
+            .events-grid { grid-template-columns: repeat(3, 1fr); } /* 3 στήλες σε μεγάλα PC */
+        }
+
+        .section-title { font-family: 'Orbitron', sans-serif; color: #ffd700; font-size: 14px; letter-spacing: 3px; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 215, 0, 0.3); display: inline-block; padding-bottom: 5px; }
+        .event-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #eee; }
+        .event-countdown { color: #ffd700; font-family: monospace; font-size: 18px; font-weight: bold; }
+        .event-label { font-size: 10px; color: #777; text-transform: uppercase; }
         .active-row { border-color: #00ff88 !important; background: rgba(0, 255, 136, 0.08) !important; }
-
-        .event-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: #eee; }
-        .event-countdown { color: #ffd700; font-family: monospace; font-size: 16px; font-weight: bold; }
-        .event-label { font-size: 10px; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
-
-        @media (max-width: 500px) { .events-grid { grid-template-columns: 1fr; } .live-timer, .next-timer { font-size: 45px; } }
     </style>
 </head>
 <body>
 
     <div id="login-overlay">
-        <div class="glass-panel">
-            <h2 style="color:#ffd700; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
-            <span class="secure-text">IDENTITY VERIFICATION REQUIRED</span>
+        <div class="glass-panel" style="max-width: 400px;">
+            <h2 style="color:#ffd700; font-size:18px; letter-spacing:3px; margin-bottom: 10px;">SYSTEM ACCESS</h2>
+            <span style="color: #fff; font-size: 11px; letter-spacing: 1px; display: block; margin-bottom: 20px;">IDENTITY VERIFICATION REQUIRED</span>
             
             <div id="input-area">
                 <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off">
@@ -134,14 +132,13 @@
                     <div class="loader-fill" id="fill"></div>
                 </div>
             </div>
-
-            <div id="status-msg">READY FOR INPUT</div>
+            <div id="status-msg" style="color: #ffd700; font-size: 11px; margin-top: 20px; font-weight: bold; height: 15px;">READY FOR INPUT</div>
         </div>
     </div>
 
     <div class="glass-panel" id="app">
-        <h1>ADEN TRACKER</h1>
-        <div id="clock">YOUR LOCAL TIME: 00:00:00</div>
+        <h1 style="font-family: 'Orbitron'; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px;">ADEN TRACKER</h1>
+        <div id="clock" style="color: #888; font-family: monospace; font-size: 14px; margin-bottom: 20px;">YOUR LOCAL TIME: 00:00:00</div>
         
         <div id="active-display"></div>
 
@@ -165,21 +162,17 @@
         const passInput = document.getElementById('passInput');
         passInput.addEventListener('input', function() {
             if(this.value === SECRET) {
-                // Επιτυχία: Πράσινο εφέ
                 this.classList.add('success-border');
-                
                 setTimeout(() => {
                     document.getElementById('input-area').style.display = 'none';
                     document.getElementById('loader-container').style.display = 'block';
                     document.getElementById('status-msg').innerText = "SYNCHRONIZING WITH DATABASE...";
-                    
                     let width = 0;
                     let interval = setInterval(() => {
                         if (width >= 100) {
                             clearInterval(interval);
                             document.getElementById('status-msg').innerText = "ACCESS GRANTED";
                             document.getElementById('status-msg').style.color = "#00ff88";
-                            
                             setTimeout(() => {
                                 document.getElementById('login-overlay').style.opacity = '0';
                                 setTimeout(() => {
@@ -195,14 +188,10 @@
                             width++;
                             document.getElementById('fill').style.width = width + '%';
                             document.getElementById('percent').innerText = width + '%';
-                            if(width === 45) document.getElementById('status-msg').innerText = "FETCHING EVENT SCHEDULE...";
-                            if(width === 80) document.getElementById('status-msg').innerText = "CALCULATING LOCAL OFFSETS...";
                         }
                     }, 20);
                 }, 400);
-
             } else if (this.value.length >= 6) {
-                // Λάθος: Shake και κόκκινο
                 this.classList.add('shake');
                 setTimeout(() => { this.classList.remove('shake'); this.value = ""; }, 500);
             }
@@ -219,9 +208,7 @@
             const nowLocal = new Date();
             const nowGreek = new Date(new Date().toLocaleString("en-US", {timeZone: "Europe/Athens"}));
             const timeDiff = nowGreek.getTime() - nowLocal.getTime();
-
             document.getElementById('clock').innerText = "YOUR LOCAL TIME: " + nowLocal.toLocaleTimeString('en-GB');
-
             let processed = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
                 let startG = new Date(nowGreek); startG.setHours(h, m, 0, 0);
@@ -235,12 +222,7 @@
 
             let gridHtml = "";
             processed.forEach(e => {
-                gridHtml += `
-                <div class="event-item ${e.isLive ? 'active-row' : ''}">
-                    <span class="event-name">${icons[e.n] || ''} ${e.n}</span>
-                    <span class="event-countdown">${e.isLive ? 'LIVE NOW' : formatTime(e.diff)}</span>
-                    <span class="event-label">${e.isLive ? 'ENDS IN' : 'STARTS IN'}</span>
-                </div>`;
+                gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}"><span class="event-name">${icons[e.n] || ''} ${e.n}</span><span class="event-countdown">${e.isLive ? 'LIVE NOW' : formatTime(e.diff)}</span><span class="event-label">${e.isLive ? 'ENDS IN' : 'STARTS IN'}</span></div>`;
             });
             document.getElementById('grid').innerHTML = gridHtml;
 
@@ -248,7 +230,7 @@
             let isLive = processed.some(e => e.isLive);
             document.getElementById('active-display').innerHTML = `
                 <div style="color:${isLive ? '#00ff88' : '#ff9800'}; font-size:12px; font-weight:bold; letter-spacing:2px;">${isLive ? 'EVENT LIVE' : 'UPCOMING'}</div>
-                <div style="font-size:28px; font-family:Orbitron; margin: 10px 0;">${live.n}</div>
+                <div style="font-size: clamp(20px, 5vw, 28px); font-family:Orbitron; margin: 10px 0;">${live.n}</div>
                 <div class="${isLive ? 'live-timer' : 'next-timer'}">${formatTime(live.diff)}</div>`;
         }
     </script>
