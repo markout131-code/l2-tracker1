@@ -1,202 +1,205 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L2 ADEN - SECURE TRACKER</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        
-        body { 
-            background-color: #050505; 
-            margin: 0;
-            display: flex; justify-content: center; align-items: flex-start; 
-            min-height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), 
-                        url('bg.jpeg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            font-family: 'Rajdhani', sans-serif;
-            overflow-y: auto;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>L2 ADEN - SECURE TRACKER</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+body { 
+    background-color: #050505; 
+    margin: 0;
+    display: flex; justify-content: center; align-items: flex-start; 
+    min-height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), 
+                url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    font-family: 'Rajdhani', sans-serif;
+    overflow-y: auto;
+}
+.glass-panel {
+    background: rgba(18, 18, 24, 0.92);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-top: 5px solid #ffd700;
+    padding: 30px; 
+    border-radius: 25px; 
+    text-align: center;
+    width: 90%; 
+    max-width: 600px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    margin: 40px auto; 
+}
+#loader-container { display: none; margin-top: 25px; position: relative; }
+.loader-track { width: 100%; height: 22px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 215, 0, 0.3); position: relative; }
+.loader-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #b8860b, #ffd700); transition: width 0.05s linear; }
+.percentage-text { position: absolute; width: 100%; top: 0; left: 0; line-height: 22px; font-size: 12px; font-family: 'Orbitron', sans-serif; font-weight: bold; color: white; z-index: 5; text-shadow: 1px 1px 2px black; }
 
-        .glass-panel {
-            background: rgba(18, 18, 24, 0.92);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            border-top: 5px solid #ffd700;
-            padding: 30px; 
-            border-radius: 25px; 
-            text-align: center;
-            width: 90%; 
-            max-width: 600px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            margin: 40px auto; 
-        }
+#login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10000; background: #050505; transition: opacity 0.8s ease; }
+.secure-text { color: #ffffff; font-size: 13px; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; display: block; }
+input[type="password"] { 
+    background: #000; border: 2px solid #ffd700; padding: 15px; color: #ffd700; 
+    text-align: center; width: 240px; border-radius: 8px; outline: none; 
+    font-size: 32px; letter-spacing: 12px; transition: all 0.3s ease;
+}
+.success-border { border-color: #00ff88 !important; box-shadow: 0 0 20px rgba(0, 255, 136, 0.6) !important; color: #00ff88 !important; }
+.shake { animation: shake 0.4s; border-color: #ff4444 !important; }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-8px); } }
 
-        
-        #loader-container { display: none; margin-top: 25px; position: relative; }
-        .loader-track { width: 100%; height: 22px; background: rgba(255, 255, 255, 0.05); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 215, 0, 0.3); position: relative; }
-        .loader-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #b8860b, #ffd700); transition: width 0.05s linear; }
-        .percentage-text { position: absolute; width: 100%; top: 0; left: 0; line-height: 22px; font-size: 12px; font-family: 'Orbitron', sans-serif; font-weight: bold; color: white; z-index: 5; text-shadow: 1px 1px 2px black; }
+#status-msg { color: #ffd700; font-size: 11px; margin-top: 20px; font-weight: bold; letter-spacing: 2px; height: 15px; }
 
-        
-        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10000; background: #050505; transition: opacity 0.8s ease; }
-        .secure-text { color: #ffffff; font-size: 13px; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; display: block; }
-        
-        input[type="password"] { 
-            background: #000; border: 2px solid #ffd700; padding: 15px; color: #ffd700; 
-            text-align: center; width: 240px; border-radius: 8px; outline: none; 
-            font-size: 32px; letter-spacing: 12px; transition: all 0.3s ease;
-        }
+#app { display: none; opacity: 0; transition: opacity 1s ease; width: 100%; }
+h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; font-size: 26px; }
+#clock { color: #888; font-family: monospace; margin-bottom: 20px; font-size: 14px; }
 
-        .success-border { border-color: #00ff88 !important; box-shadow: 0 0 20px rgba(0, 255, 136, 0.6) !important; color: #00ff88 !important; }
-        .shake { animation: shake 0.4s; border-color: #ff4444 !important; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-8px); } }
+.live-timer { font-size: 55px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); margin: 10px 0; }
+.next-timer { font-size: 55px; font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255,152,0,0.3); margin: 10px 0; }
 
-        #status-msg { color: #ffd700; font-size: 11px; margin-top: 20px; font-weight: bold; letter-spacing: 2px; height: 15px; }
+.section-title { font-family: 'Orbitron', sans-serif; color: #ffd700; font-size: 14px; letter-spacing: 3px; margin-top: 35px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 215, 0, 0.3); display: inline-block; padding-bottom: 5px; }
 
-        
-        #app { display: none; opacity: 0; transition: opacity 1s ease; width: 100%; }
-        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; font-size: 26px; }
-        #clock { color: #888; font-family: monospace; margin-bottom: 20px; font-size: 14px; }
-        
-        .live-timer { font-size: 55px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); margin: 10px 0; }
-        .next-timer { font-size: 55px; font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255,152,0,0.3); margin: 10px 0; }
+.events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.event-item { 
+    background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 12px; 
+    display: flex; flex-direction: column; align-items: center;
+    border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s ease;
+}
+.event-item:hover { background: rgba(255, 215, 0, 0.1); border-color: #ffd700; transform: translateY(-3px); }
+.active-row { border-color: #00ff88 !important; background: rgba(0, 255, 136, 0.08) !important; }
 
-        .section-title { font-family: 'Orbitron', sans-serif; color: #ffd700; font-size: 14px; letter-spacing: 3px; margin-top: 35px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 215, 0, 0.3); display: inline-block; padding-bottom: 5px; }
+.event-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: #eee; }
+.event-countdown { color: #ffd700; font-family: monospace; font-size: 16px; font-weight: bold; }
+.event-label { font-size: 10px; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
 
-        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .event-item { 
-            background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 12px; 
-            display: flex; flex-direction: column; align-items: center;
-            border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s ease;
-        }
-        .event-item:hover { background: rgba(255, 215, 0, 0.1); border-color: #ffd700; transform: translateY(-3px); }
-        .active-row { border-color: #00ff88 !important; background: rgba(0, 255, 136, 0.08) !important; }
-
-        .event-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: #eee; }
-        .event-countdown { color: #ffd700; font-family: monospace; font-size: 16px; font-weight: bold; }
-        .event-label { font-size: 10px; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
-
-        @media (max-width: 500px) { .events-grid { grid-template-columns: 1fr; } .live-timer, .next-timer { font-size: 45px; } }
-    </style>
+@media (max-width: 500px) { 
+    .events-grid { grid-template-columns: 1fr; } 
+    .live-timer, .next-timer { font-size: 45px; } 
+}
+</style>
 </head>
 <body>
 
-    <div id="login-overlay">
-        <div class="glass-panel">
-            <h2 style="color:#ffd700; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
-            <span class="secure-text">IDENTITY VERIFICATION REQUIRED</span>
-            
-            <div id="input-area">
-                <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off">
-            </div>
-
-            <div id="loader-container">
-                <div class="loader-track">
-                    <div class="percentage-text" id="percent">0%</div>
-                    <div class="loader-fill" id="fill"></div>
-                </div>
-            </div>
-
-            <div id="status-msg">READY FOR INPUT</div>
+<div id="login-overlay">
+    <div class="glass-panel">
+        <h2 style="color:#ffd700; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
+        <span class="secure-text">IDENTITY VERIFICATION REQUIRED</span>
+        <div id="input-area">
+            <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off" />
         </div>
-    </div>
-
-    <div class="glass-panel" id="app">
-        <h1>ADEN TRACKER</h1>
-        <div id="clock">YOUR LOCAL TIME: 00:00:00</div>
-        <div id="active-display"></div>
-        <div class="section-title">TIMES FOR EVENTS</div>
-        <div class="events-grid" id="grid"></div>
-        <div style="font-size: 11px; color: #555; margin-top: 25px; letter-spacing: 1px; font-style: italic;">
-            * ALL TIMES ARE AUTOMATICALLY ADJUSTED TO YOUR DEVICE TIMEZONE
+        <div id="loader-container">
+            <div class="loader-track">
+                <div class="percentage-text" id="percent">0%</div>
+                <div class="loader-fill" id="fill"></div>
+            </div>
         </div>
+        <div id="status-msg">READY FOR INPUT</div>
     </div>
+</div>
 
-    <script>
-        
-        const _0x1a2b = "YWRlbmwy"; 
-        const SECRET = atob(_0x1a2b); 
+<div class="glass-panel" id="app">
+    <h1>ADEN TRACKER</h1>
+    <div id="clock">YOUR LOCAL TIME: 00:00:00</div>
+    <div id="active-display"></div>
+    <div class="section-title">TIMES FOR EVENTS</div>
+    <div class="events-grid" id="grid"></div>
+    <div style="font-size: 11px; color: #555; margin-top: 25px; letter-spacing: 1px; font-style: italic;">
+        * ALL TIMES ARE AUTOMATICALLY ADJUSTED TO YOUR DEVICE TIMEZONE
+    </div>
+</div>
 
-        const icons = { "Invasion": "⚔️", "Teddy Bears": "🧸", "Catacombs": "💀", "Olympiad": "🏆", "Fortress": "🚩", "Sieges": "🏰", "Forest of Duels": "🤺", "Mafia's Hideout": "🕵️‍♂️", "Iron Depot": "🏗️", "Boss Subjugation": "👹" };
-        
-       
-        const eventsList = [
-            { n: "Invasion", t: "15:40", d: 30 }, { n: "Invasion", t: "19:40", d: 30 }, { n: "Invasion", t: "23:40", d: 30 }, { n: "Invasion", t: "03:40", d: 30 },
-            { n: "Teddy Bears", t: "13:00", d: 15 }, { n: "Teddy Bears", t: "00:00", d: 15 }, { n: "Olympiad", t: "02:00", d: 30 }, { n: "Fortress", t: "22:00", d: 20 }, 
-            { n: "Forest of Duels", t: "23:30", d: 30 }, { n: "Mafia's Hideout", t: "00:00", d: 25 }, { n: "Iron Depot", t: "22:00", d: 15 }, { n: "Boss Subjugation", t: "22:20", d: 25 }
-        ];
+<script>
+const _0x1a2b = "YWRlbmwy"; 
+const SECRET = atob(_0x1a2b); 
 
-        const passInput = document.getElementById('passInput');
-        passInput.addEventListener('input', function() {
-            if(this.value === SECRET) {
-                this.classList.add('success-border');
-                setTimeout(() => {
-                    document.getElementById('input-area').style.display = 'none';
-                    document.getElementById('loader-container').style.display = 'block';
-                    document.getElementById('status-msg').innerText = "SYNCHRONIZING...";
-                    let width = 0;
-                    let interval = setInterval(() => {
-                        if (width >= 100) {
-                            clearInterval(interval);
-                            document.getElementById('status-msg').innerText = "ACCESS GRANTED";
-                            document.getElementById('status-msg').style.color = "#00ff88";
-                            setTimeout(() => {
-                                document.getElementById('login-overlay').style.opacity = '0';
-                                setTimeout(() => {
-                                    document.getElementById('login-overlay').style.display = 'none';
-                                    const app = document.getElementById('app');
-                                    app.style.display = 'block';
-                                    setTimeout(() => app.style.opacity = '1', 50);
-                                    setInterval(update, 1000); update();
-                                }, 600);
-                            }, 400);
-                        } else {
-                            width++;
-                            document.getElementById('fill').style.width = width + '%';
-                            document.getElementById('percent').innerText = width + '%';
-                        }
-                    }, 20);
-                }, 400);
-            } else if (this.value.length >= 6) {
-                this.classList.add('shake');
-                setTimeout(() => { this.classList.remove('shake'); this.value = ""; }, 500);
-            }
-        });
+const icons = { "Invasion": "⚔️", "Teddy Bears": "🧸", "Catacombs": "💀", "Olympiad": "🏆", "Fortress": "🚩", "Sieges": "🏰", "Forest of Duels": "🤺", "Mafia's Hideout": "🕵️‍♂️", "Iron Depot": "🏗️", "Boss Subjugation": "👹" };
 
-        function formatTime(ms) {
-            let hh = Math.floor(ms / 3600000);
-            let mm = Math.floor((ms % 3600000) / 60000);
-            let ss = Math.floor((ms % 60000) / 1000);
-            return String(hh).padStart(2,'0') + ":" + String(mm).padStart(2,'0') + ":" + String(ss).padStart(2,'0');
-        }
+const eventsList = [
+    { n: "Invasion", t: "15:40", d: 30 }, { n: "Invasion", t: "19:40", d: 30 }, { n: "Invasion", t: "23:40", d: 30 }, { n: "Invasion", t: "03:40", d: 30 },
+    { n: "Teddy Bears", t: "13:00", d: 15 }, { n: "Teddy Bears", t: "00:00", d: 15 }, { n: "Olympiad", t: "02:00", d: 30 }, { n: "Fortress", t: "22:00", d: 20 },
+    { n: "Forest of Duels", t: "23:30", d: 30 }, { n: "Mafia's Hideout", t: "00:00", d: 25 }, { n: "Iron Depot", t: "22:00", d: 15 }, { n: "Boss Subjugation", t: "22:20", d: 25 }
+];
 
-        function update() {
-            const nowLocal = new Date();
-            const nowGreek = new Date(new Date().toLocaleString("en-US", {timeZone: "Europe/Athens"}));
-            const timeDiff = nowGreek.getTime() - nowLocal.getTime();
-            document.getElementById('clock').innerText = "YOUR LOCAL TIME: " + nowLocal.toLocaleTimeString('en-GB');
-            let processed = eventsList.map(e => {
-                const [h, m] = e.t.split(':').map(Number);
-                let startG = new Date(nowGreek); startG.setHours(h, m, 0, 0);
-                let endG = new Date(startG.getTime() + e.d * 60000);
-                if (nowGreek > endG) { startG.setDate(startG.getDate() + 1); endG.setDate(endG.getDate() + 1); }
-                let startL = new Date(startG.getTime() - timeDiff);
-                let endL = new Date(endG.getTime() - timeDiff);
-                let isLive = (nowLocal >= startL && nowLocal <= endL);
-                return { ...e, isLive, diff: isLive ? (endL - nowLocal) : (startL - nowLocal) };
-            }).sort((a, b) => a.diff - b.diff);
-            let gridHtml = "";
-            processed.forEach(e => {
-                gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}"><span class="event-name">${icons[e.n] || ''} ${e.n}</span><span class="event-countdown">${e.isLive ? 'LIVE NOW' : formatTime(e.diff)}</span><span class="event-label">${e.isLive ? 'ENDS IN' : 'STARTS IN'}</span></div>`;
-            });
-            document.getElementById('grid').innerHTML = gridHtml;
-            let live = processed.filter(e => e.isLive)[0] || processed[0];
-            let isLive = processed.some(e => e.isLive);
-            document.getElementById('active-display').innerHTML = `<div style="color:${isLive ? '#00ff88' : '#ff9800'}; font-size:12px; font-weight:bold; letter-spacing:2px;">${isLive ? 'EVENT LIVE' : 'UPCOMING'}</div><div style="font-size:28px; font-family:Orbitron; margin: 10px 0;">${live.n}</div><div class="${isLive ? 'live-timer' : 'next-timer'}">${formatTime(live.diff)}</div>`;
-        }
-    </script>
+const passInput = document.getElementById('passInput');
+passInput.addEventListener('input', function() {
+    if(this.value === SECRET) {
+        this.classList.add('success-border');
+        setTimeout(() => {
+            document.getElementById('input-area').style.display = 'none';
+            document.getElementById('loader-container').style.display = 'block';
+            document.getElementById('status-msg').innerText = "SYNCHRONIZING...";
+            let width = 0;
+            let interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('status-msg').innerText = "ACCESS GRANTED";
+                    document.getElementById('status-msg').style.color = "#00ff88";
+                    setTimeout(() => {
+                        document.getElementById('login-overlay').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('login-overlay').style.display = 'none';
+                            const app = document.getElementById('app');
+                            app.style.display = 'block';
+                            setTimeout(() => app.style.opacity = '1', 50);
+                            setInterval(update, 1000); 
+                            update();
+                        }, 600);
+                    }, 400);
+                } else {
+                    width++;
+                    document.getElementById('fill').style.width = width + '%';
+                    document.getElementById('percent').innerText = width + '%';
+                }
+            }, 20);
+        }, 400);
+    } else if (this.value.length >= 6) {
+        this.classList.add('shake');
+        setTimeout(() => { this.classList.remove('shake'); this.value = ""; }, 500);
+    }
+});
+
+// Μέθοδος μορφοποίησης χρόνου
+function formatTime(ms) {
+    let hh = Math.floor(ms / 3600000);
+    let mm = Math.floor((ms % 3600000) / 60000);
+    let ss = Math.floor((ms % 60000) / 1000);
+    return String(hh).padStart(2,'0') + ":" + String(mm).padStart(2,'0') + ":" + String(ss).padStart(2,'0');
+}
+
+// Ανανεώνει το ρολόι και τις ειδοποιήσεις
+function update() {
+    const nowLocal = new Date();
+    const nowGreek = new Date(new Date().toLocaleString("en-US", {timeZone: "Europe/Athens"}));
+    const timeDiff = nowGreek.getTime() - nowLocal.getTime();
+
+    document.getElementById('clock').innerText = "YOUR LOCAL TIME: " + nowLocal.toLocaleTimeString('en-GB');
+
+    let processed = eventsList.map(e => {
+        const [h, m] = e.t.split(':').map(Number);
+        let startG = new Date(nowGreek); startG.setHours(h, m, 0, 0);
+        let endG = new Date(startG.getTime() + e.d * 60000);
+        if (nowGreek > endG) { startG.setDate(startG.getDate() + 1); endG.setDate(endG.getDate() + 1); }
+        let startL = new Date(startG.getTime() - timeDiff);
+        let endL = new Date(endG.getTime() - timeDiff);
+        let isLive = (nowLocal >= startL && nowLocal <= endL);
+        return { ...e, isLive, diff: isLive ? (endL - nowLocal) : (startL - nowLocal) };
+    }).sort((a, b) => a.diff - b.diff);
+
+    let gridHtml = "";
+    processed.forEach(e => {
+        gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}">
+            <span class="event-name">${icons[e.n] || ''} ${e.n}</span>
+            <span class="event-countdown">${e.isLive ? 'LIVE NOW' : formatTime(e.diff)}</span>
+            <span class="event-label">${e.isLive ? 'ENDS IN' : 'STARTS IN'}</span>
+        </div>`;
+    });
+    document.getElementById('grid').innerHTML = gridHtml;
+
+    let live = processed.filter(e => e.isLive)[0] || processed[0];
+    let isLive = processed.some(e => e.isLive);
+    document.getElementById('active-display').innerHTML = `<div style="color:${isLive ? '#00ff88' : '#ff9800'}; font-size:12px; font-weight:bold; letter-spacing:2px;">${isLive ? 'EVENT LIVE' : 'UPCOMING'}</div>
+    <div style="font-size:28px; font-family:Orbitron; margin: 10px 0;">${live.n}</div>
+    <div class="${isLive ? 'live-timer' : 'next-timer'}">${formatTime(live.diff)}</div>`;
+}
+</script>
 </body>
 </html>
