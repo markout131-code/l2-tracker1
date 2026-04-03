@@ -26,6 +26,22 @@
             font-family: 'Orbitron', sans-serif;
         }
 
+        /* ΤΟ ΕΦΕ ΣΤΑ ΓΡΑΜΜΑΤΑ ΠΟΥ ΔΕΝ ΔΙΑΒΑΖΟΝΤΑΙ */
+        .encrypted-text {
+            color: #666;
+            font-size: 10px;
+            margin-bottom: 25px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            filter: blur(3px); /* Θόλωση για να μην διαβάζεται εύκολα */
+            transition: filter 0.5s;
+            user-select: none;
+        }
+
+        .login-box:hover .encrypted-text {
+            filter: blur(1.5px); /* Ξεθολώνει λίγο όταν πας κοντά */
+        }
+
         input[type="password"] {
             background: #000;
             border: 2px solid #ffd700;
@@ -100,8 +116,10 @@
 
     <div id="login-overlay">
         <div class="login-box">
-            <h2 style="color:#ffd700; margin-bottom:10px; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
-            <p style="color:#666; font-size:10px; margin-bottom:25px;">IDENTITY VERIFICATION REQUIRED</p>
+            <h2 style="color:#ffd700; margin-bottom:5px; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
+            <!-- ΕΔΩ ΕΙΝΑΙ ΤΟ ΚΕΙΜΕΝΟ ΠΟΥ ΔΕΝ ΔΙΑΒΑΖΕΤΑΙ ΕΥΚΟΛΑ -->
+            <p class="encrypted-text">IDENTITY VERIFICATION REQUIRED</p>
+            
             <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off">
             <div id="status-msg">WAITING FOR KEY...</div>
         </div>
@@ -119,7 +137,6 @@
         const inputField = document.getElementById('passInput');
         const statusMsg = document.getElementById('status-msg');
 
-        // ΕΛΕΓΧΟΣ ΚΩΔΙΚΟΥ
         inputField.addEventListener('input', function() {
             const val = this.value;
 
