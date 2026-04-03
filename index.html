@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L2 ADEN - FINAL TRACKER</title>
+    <title>L2 ADEN - ULTIMATE TRACKER</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         /* --- GLOBAL STYLE --- */
@@ -17,7 +17,7 @@
             background-size: cover;
             color: white;
             font-family: 'Rajdhani', sans-serif;
-            overflow-y: auto; /* ΕΠΕΤΡΕΠΕΙ ΤΟ SCROLL */
+            overflow-y: auto; /* Επιτρέπει το Scroll */
         }
 
         .glass-panel {
@@ -43,7 +43,32 @@
         /* --- LOGIN OVERLAY --- */
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10000; background: #050505; transition: opacity 0.8s ease; }
         .secure-text { color: #ffffff; font-size: 13px; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; display: block; }
-        input[type="password"] { background: #000; border: 2px solid #ffd700; padding: 15px; color: #ffd700; text-align: center; width: 240px; border-radius: 8px; outline: none; font-size: 32px; letter-spacing: 12px; }
+        
+        input[type="password"] { 
+            background: #000; 
+            border: 2px solid #ffd700; 
+            padding: 15px; 
+            color: #ffd700; 
+            text-align: center; 
+            width: 240px; 
+            border-radius: 8px; 
+            outline: none; 
+            font-size: 32px; 
+            letter-spacing: 12px; 
+            transition: all 0.3s ease;
+        }
+
+        /* Επιτυχία: Πράσινο πλαίσιο χωρίς κίνηση */
+        .success-border {
+            border-color: #00ff88 !important;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6) !important;
+            color: #00ff88 !important;
+        }
+
+        /* Λάθος: Κίνηση Shake */
+        .shake { animation: shake 0.4s; border-color: #ff4444 !important; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-8px); } }
+
         #status-msg { color: #ffd700; font-size: 11px; margin-top: 20px; font-weight: bold; letter-spacing: 2px; height: 15px; }
 
         /* --- MAIN APP --- */
@@ -73,9 +98,6 @@
         .event-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: #eee; }
         .event-countdown { color: #ffd700; font-family: monospace; font-size: 16px; font-weight: bold; }
         .event-label { font-size: 10px; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
-
-        .shake { animation: shake 0.4s; border-color: #ff4444 !important; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-8px); } }
 
         @media (max-width: 500px) { .events-grid { grid-template-columns: 1fr; } .live-timer, .next-timer { font-size: 45px; } }
     </style>
@@ -128,37 +150,44 @@
         const passInput = document.getElementById('passInput');
         passInput.addEventListener('input', function() {
             if(this.value === SECRET) {
-                document.getElementById('input-area').style.display = 'none';
-                document.getElementById('loader-container').style.display = 'block';
-                document.getElementById('status-msg').innerText = "SYNCHRONIZING WITH DATABASE...";
+                // Επιτυχία: Πράσινο εφέ
+                this.classList.add('success-border');
                 
-                let width = 0;
-                let interval = setInterval(() => {
-                    if (width >= 100) {
-                        clearInterval(interval);
-                        document.getElementById('status-msg').innerText = "ACCESS GRANTED";
-                        document.getElementById('status-msg').style.color = "#00ff88";
-                        
-                        setTimeout(() => {
-                            document.getElementById('login-overlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('input-area').style.display = 'none';
+                    document.getElementById('loader-container').style.display = 'block';
+                    document.getElementById('status-msg').innerText = "SYNCHRONIZING WITH DATABASE...";
+                    
+                    let width = 0;
+                    let interval = setInterval(() => {
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            document.getElementById('status-msg').innerText = "ACCESS GRANTED";
+                            document.getElementById('status-msg').style.color = "#00ff88";
+                            
                             setTimeout(() => {
-                                document.getElementById('login-overlay').style.display = 'none';
-                                const app = document.getElementById('app');
-                                app.style.display = 'block';
-                                setTimeout(() => app.style.opacity = '1', 50);
-                                setInterval(update, 1000);
-                                update();
-                            }, 600);
-                        }, 400);
-                    } else {
-                        width++;
-                        document.getElementById('fill').style.width = width + '%';
-                        document.getElementById('percent').innerText = width + '%';
-                        if(width === 45) document.getElementById('status-msg').innerText = "FETCHING EVENT SCHEDULE...";
-                        if(width === 80) document.getElementById('status-msg').innerText = "CALCULATING LOCAL OFFSETS...";
-                    }
-                }, 20);
+                                document.getElementById('login-overlay').style.opacity = '0';
+                                setTimeout(() => {
+                                    document.getElementById('login-overlay').style.display = 'none';
+                                    const app = document.getElementById('app');
+                                    app.style.display = 'block';
+                                    setTimeout(() => app.style.opacity = '1', 50);
+                                    setInterval(update, 1000);
+                                    update();
+                                }, 600);
+                            }, 400);
+                        } else {
+                            width++;
+                            document.getElementById('fill').style.width = width + '%';
+                            document.getElementById('percent').innerText = width + '%';
+                            if(width === 45) document.getElementById('status-msg').innerText = "FETCHING EVENT SCHEDULE...";
+                            if(width === 80) document.getElementById('status-msg').innerText = "CALCULATING LOCAL OFFSETS...";
+                        }
+                    }, 20);
+                }, 400);
+
             } else if (this.value.length >= 6) {
+                // Λάθος: Shake και κόκκινο
                 this.classList.add('shake');
                 setTimeout(() => { this.classList.remove('shake'); this.value = ""; }, 500);
             }
