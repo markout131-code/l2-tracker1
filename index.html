@@ -167,12 +167,19 @@
             const now = new Date();
             document.getElementById('clock').innerHTML = "LOCAL TIME: " + now.toLocaleTimeString('en-GB', { hour12: false });
 
+            function update() {
+            const now = new Date();
+            // Εξασφαλίζουμε ότι το ρολόι δείχνει πάντα 2 ψηφία
+            const timeString = now && now.toLocaleTimeString ? now.toLocaleTimeString('en-GB') : "--:--:--";
+            document.getElementById('clock').innerHTML = "LOCAL TIME: " + timeString;
+
             let processedEvents = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
-                let startTime = new Date();
+                let startTime = new Date(now); // Χρήση του 'now' ως βάση
                 startTime.setHours(h, m, 0, 0); 
                 let endTime = new Date(startTime.getTime() + e.d * 60000);
 
+                // Αν η τρέχουσα ώρα είναι μετά το τέλος του event, πάμε στο επόμενο 24ωρο
                 if (now > endTime) {
                     startTime.setDate(startTime.getDate() + 1);
                     endTime.setDate(endTime.getDate() + 1);
@@ -182,6 +189,12 @@
                 let diff = isLive ? (endTime - now) : (startTime - now);
                 
                 return { ...e, startTime, endTime, isLive, diff };
+            });
+
+            // Ταξινομούμε ώστε το πιο κοντινό χρονικά να βγαίνει πρώτο
+            processedEvents.sort((a, b) => a.diff - b.diff);
+            
+            // ... το υπόλοιπο Render παραμένει ίδιο
             });
 
             processedEvents.sort((a, b) => a.diff - b.diff);
