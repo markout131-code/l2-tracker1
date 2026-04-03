@@ -13,7 +13,7 @@
             background: #050505;
             display: flex; justify-content: center; align-items: center;
             z-index: 10000;
-            transition: 0.8s ease-in-out;
+            transition: 0.6s ease-in-out;
         }
 
         .login-box {
@@ -24,10 +24,8 @@
             border: 2px solid #ffd700;
             box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
             font-family: 'Orbitron', sans-serif;
-            transition: transform 0.3s;
         }
 
-        /* ΜΕΓΑΛΑ ΑΣΤΕΡΑΚΙΑ ΣΤΟ PASSWORD */
         input[type="password"] {
             background: #000;
             border: 2px solid #ffd700;
@@ -42,23 +40,16 @@
             transition: 0.3s;
         }
 
-        /* Error Message Style */
-        #error-msg {
-            color: #ff4444;
-            font-size: 12px;
+        #status-msg {
+            color: #444;
+            font-size: 11px;
             margin-top: 20px;
             font-weight: bold;
             letter-spacing: 2px;
-            display: none; /* Κρυφό αρχικά */
             text-transform: uppercase;
         }
 
-        /* Shake Animation για λάθος κωδικό */
-        .shake {
-            animation: shake 0.4s ease-in-out;
-            border-color: #ff4444 !important;
-        }
-
+        .shake { animation: shake 0.4s ease-in-out; border-color: #ff4444 !important; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-8px); }
@@ -92,7 +83,6 @@
 
         h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; }
         #clock { color: #888; font-family: monospace; margin-bottom: 20px; font-size: 14px; }
-
         .live-timer { font-size: 60px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); }
         .next-timer { font-size: 60px; font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255,152,0,0.3); }
 
@@ -108,17 +98,15 @@
 </head>
 <body>
 
-    <!-- LOGIN SECTION -->
     <div id="login-overlay">
-        <div class="login-box" id="login-box">
+        <div class="login-box">
             <h2 style="color:#ffd700; margin-bottom:10px; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
             <p style="color:#666; font-size:10px; margin-bottom:25px;">IDENTITY VERIFICATION REQUIRED</p>
             <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off">
-            <div id="error-msg">ACCESS DENIED - INVALID KEY</div>
+            <div id="status-msg">WAITING FOR KEY...</div>
         </div>
     </div>
 
-    <!-- MAIN APP SECTION -->
     <div class="main-card" id="app">
         <h1>ADEN TRACKER</h1>
         <div id="clock">LOCAL TIME: 00:00:00</div>
@@ -129,16 +117,15 @@
     <script>
         const SECRET = "adenl2";
         const inputField = document.getElementById('passInput');
-        const errorMsg = document.getElementById('error-msg');
-        const loginBox = document.getElementById('login-box');
+        const statusMsg = document.getElementById('status-msg');
 
-        // ΑΥΤΟΜΑΤΟΣ ΕΛΕΓΧΟΣ ΚΩΔΙΚΟΥ
+        // ΕΛΕΓΧΟΣ ΚΩΔΙΚΟΥ
         inputField.addEventListener('input', function() {
             const val = this.value;
-            
-            // Αν ο κωδικός είναι σωστός
+
             if(val === SECRET) {
-                errorMsg.style.display = "none";
+                statusMsg.innerText = "ACCESS GRANTED";
+                statusMsg.style.color = "#00ff88";
                 this.style.borderColor = "#00ff88";
                 
                 setTimeout(() => {
@@ -150,45 +137,25 @@
                     }, 600);
                 }, 200);
             } 
-            // Αν ο χρήστης έγραψε 6 ή περισσότερους χαρακτήρες και είναι λάθος
-            else if (val.length >= SECRET.length) {
-                errorMsg.style.display = "block";
-                inputField.classList.add('shake');
-                
-                // Καθαρισμός μετά από λίγο για να μπορεί να ξαναδοκιμάσει
+            else if (val.length >= 6) {
+                statusMsg.innerText = "ACCESS DENIED - INVALID KEY";
+                statusMsg.style.color = "#ff4444";
+                this.classList.add('shake');
                 setTimeout(() => {
-                    inputField.classList.remove('shake');
-                    this.value = ""; // Καθαρίζει το πεδίο αυτόματα στο λάθος
-                }, 500);
-            } else {
-                errorMsg.style.display = "none";
+                    this.classList.remove('shake');
+                    this.value = "";
+                    statusMsg.innerText = "WAITING FOR KEY...";
+                    statusMsg.style.color = "#444";
+                }, 600);
             }
         });
 
-        // TRACKER LOGIC
-        const icons = { "Invasion": "⚔️",
-            "Teddy Bears": "🧸",
-            "Catacombs": "💀",
-            "Olympiad": "🏆",
-            "Fortress": "🚩",
-            "Sieges": "🏰",
-            "Forest of Duels": "🤺",
-            "Mafia's Hideout": "🕵️‍♂️",
-            "Iron Depot": "🏗️",
-            "Boss Subjugation": "👹" };
+        const icons = { "Invasion": "⚔️", "Teddy Bears": "🧸", "Catacombs": "💀", "Olympiad": "🏆", "Fortress": "🚩", "Sieges": "🏰", "Forest of Duels": "🤺", "Mafia's Hideout": "🕵️‍♂️", "Iron Depot": "🏗️", "Boss Subjugation": "👹" };
+        
         const eventsList = [
-            { n: "Invasion", t: "15:40", d: 30 }, 
-            { n: "Invasion", t: "19:40", d: 30 },
-            { n: "Invasion", t: "23:40", d: 30 }, 
-            { n: "Invasion", t: "03:40", d: 30 },
-            { n: "Teddy Bears", t: "13:00", d: 15 }, 
-            { n: "Teddy Bears", t: "00:00", d: 15 },
-            { n: "Olympiad", t: "02:00", d: 30 },
-            { n: "Fortress", t: "22:00", d: 20 }, 
-            { n: "Forest of Duels", t: "23:30", d: 30 },
-            { n: "Mafia's Hideout", t: "00:00", d: 25 },
-            { n: "Iron Depot", t: "22:00", d: 15 },
-            { n: "Boss Subjugation", t: "22:20", d: 25 }
+            { n: "Invasion", t: "15:40", d: 30 }, { n: "Invasion", t: "19:40", d: 30 }, { n: "Invasion", t: "23:40", d: 30 }, { n: "Invasion", t: "03:40", d: 30 },
+            { n: "Teddy Bears", t: "13:00", d: 15 }, { n: "Teddy Bears", t: "00:00", d: 15 }, { n: "Olympiad", t: "02:00", d: 30 }, { n: "Fortress", t: "22:00", d: 20 }, 
+            { n: "Forest of Duels", t: "23:30", d: 30 }, { n: "Mafia's Hideout", t: "00:00", d: 25 }, { n: "Iron Depot", t: "22:00", d: 15 }, { n: "Boss Subjugation", t: "22:20", d: 25 }
         ];
 
         function formatTime(ms) {
@@ -223,179 +190,6 @@
             });
             document.getElementById('grid').innerHTML = gridHtml;
 
-            let live = processed.filter(e => e.isLive);
-            let next = processed.find(e => !e.isLive);
-            let display = document.getElementById('active-display');
-
-            if (live.length > 0) {
-                display.innerHTML = `<div style="color:#00ff88; font-size:12px; letter-spacing:2px; font-weight:bold; margin-top:10px">EVENT LIVE</div><div style="font-size:28px; font-family:Orbitron">${live[0].n}</div><div class="live-timer">${formatTime(live[0].diff)}</div>`;
-            } else {
-                display.innerHTML = `<div style="color:#ff9800; font-size:12px; letter-spacing:2px; font-weight:bold; margin-top:10px">UPCOMING</div><div style="font-size:28px; font-family:Orbitron">${next.n}</div><div class="next-timer">${formatTime(next.diff)}</div>`;
-            }
-        }
-
-        function startTracker() {
-            setInterval(update, 1000);
-            update();
-        }
-    </script>
-</body>
-</html>            border-radius: 8px;
-            outline: none;
-            font-size: 30px; /* Μεγάλο μέγεθος για τα αστεράκια */
-            letter-spacing: 10px; /* Απόσταση μεταξύ τους */
-            transition: 0.3s;
-        }
-
-        input[type="password"]::placeholder {
-            font-size: 12px;
-            letter-spacing: 2px;
-            vertical-align: middle;
-        }
-
-        /* --- MAIN APP --- */
-        body { 
-            background-color: #050505; 
-            margin: 0;
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), 
-                        url('bg.jpeg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        .main-card {
-            background: rgba(18, 18, 24, 0.92);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            border-top: 5px solid #ffd700;
-            padding: 30px; border-radius: 25px; text-align: center;
-            width: 95%; max-width: 650px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            display: none; /* Κρυφό μέχρι το login */
-        }
-
-        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; }
-        #clock { color: #888; font-family: monospace; margin-bottom: 20px; }
-
-        .live-timer { font-size: 60px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); }
-        .next-timer { font-size: 60px; font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255,152,0,0.3); }
-
-        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
-        .event-item { 
-            background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 12px; 
-            display: flex; justify-content: space-between; border: 1px solid rgba(255,255,255,0.05);
-        }
-        .active-row { border-color: #00ff88; background: rgba(0, 255, 136, 0.05); }
-
-        @media (max-width: 500px) { .events-grid { grid-template-columns: 1fr; } }
-    </style>
-</head>
-<body>
-
-    <!-- LOGIN SECTION -->
-    <div id="login-overlay">
-        <div class="login-box">
-            <h2 style="color:#ffd700; margin-bottom:10px; font-size:18px; letter-spacing:3px;">L2 ADEN</h2>
-            <p style="color:#666; font-size:10px; margin-bottom:20px;">ENTER SYSTEM KEY</p>
-            <input type="password" id="passInput" placeholder="••••••" autofocus>
-            <p id="status-msg" style="color:#444; font-size:11px; margin-top:15px;">WAITING FOR KEY...</p>
-        </div>
-    </div>
-
-    <!-- MAIN APP SECTION -->
-    <div class="main-card" id="app">
-        <h1>ADEN TRACKER</h1>
-        <div id="clock">00:00:00</div>
-        <div id="active-display"></div>
-        <div class="events-grid" id="grid"></div>
-    </div>
-
-    <script>
-        const SECRET = "adenl2";
-
-        // ΑΥΤΟΜΑΤΟΣ ΕΛΕΓΧΟΣ ΚΩΔΙΚΟΥ (Auto-Login)
-        document.getElementById('passInput').addEventListener('input', function(e) {
-            if(this.value === SECRET) {
-                document.getElementById('status-msg').innerText = "ACCESS GRANTED";
-                document.getElementById('status-msg').style.color = "#00ff88";
-                this.style.borderColor = "#00ff88";
-                
-                // Μικρή καθυστέρηση για το εφέ
-                setTimeout(() => {
-                    document.getElementById('login-overlay').style.opacity = '0';
-                    setTimeout(() => {
-                        document.getElementById('login-overlay').style.display = 'none';
-                        document.getElementById('app').style.display = 'block';
-                        startTracker();
-                    }, 600);
-                }, 300);
-            }
-        });
-
-        // TRACKER LOGIC
-        const icons = {
-            "Invasion": "⚔️",
-            "Teddy Bears": "🧸",
-            "Catacombs": "💀",
-            "Olympiad": "🏆",
-            "Fortress": "🚩",
-            "Sieges": "🏰",
-            "Forest of Duels": "🤺",
-            "Mafia's Hideout": "🕵️‍♂️",
-            "Iron Depot": "🏗️",
-            "Boss Subjugation": "👹" };
-        const eventsList = [
-            { n: "Invasion", t: "15:40", d: 30 }, 
-            { n: "Invasion", t: "19:40", d: 30 },
-            { n: "Invasion", t: "23:40", d: 30 }, 
-            { n: "Invasion", t: "03:40", d: 30 },
-            { n: "Teddy Bears", t: "13:00", d: 15 }, 
-            { n: "Teddy Bears", t: "00:00", d: 15 },
-            { n: "Olympiad", t: "02:00", d: 30 },
-            { n: "Fortress", t: "22:00", d: 20 }, 
-            { n: "Forest of Duels", t: "23:30", d: 30 },
-            { n: "Mafia's Hideout", t: "00:00", d: 25 },
-            { n: "Iron Depot", t: "22:00", d: 15 },
-            { n: "Boss Subjugation", t: "22:20", d: 25 }
-        ];
-
-        function formatTime(ms) {
-            let hh = Math.floor(ms / 3600000);
-            let mm = Math.floor((ms % 3600000) / 60000);
-            let ss = Math.floor((ms % 60000) / 1000);
-            return String(hh).padStart(2,'0') + ":" + String(mm).padStart(2,'0') + ":" + String(ss).padStart(2,'0');
-        }
-
-        function update() {
-            const now = new Date();
-            document.getElementById('clock').innerText = "LOCAL TIME: " + now.toLocaleTimeString('en-GB');
-
-            let processed = eventsList.map(e => {
-                const [h, m] = e.t.split(':').map(Number);
-                let start = new Date(now); start.setHours(h, m, 0, 0);
-                let end = new Date(start.getTime() + e.d * 60000);
-                if (now > end) { start.setDate(start.getDate() + 1); end.setDate(end.getDate() + 1); }
-                let isLive = (now >= start && now <= end);
-                let diff = isLive ? (end - now) : (start - now);
-                return { ...e, isLive, diff };
-            });
-
-            processed.sort((a, b) => a.diff - b.diff);
-
-            // Render Grid
-            let gridHtml = "";
-            processed.forEach(e => {
-                gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}">
-                    <span style="font-size:13px">${icons[e.n] || ''} ${e.n}</span>
-                    <span style="color:#ffd700; font-family:monospace; font-weight:bold">${e.isLive ? 'LIVE' : formatTime(e.diff)}</span>
-                </div>`;
-            });
-            document.getElementById('grid').innerHTML = gridHtml;
-
-            // Render Active
             let live = processed.filter(e => e.isLive);
             let next = processed.find(e => !e.isLive);
             let display = document.getElementById('active-display');
