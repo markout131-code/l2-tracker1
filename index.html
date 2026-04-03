@@ -26,11 +26,11 @@
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 215, 0, 0.2);
             border-top: 5px solid #ffd700;
-            padding: 20px; /* Μειωμένο padding για κινητά */
+            padding: 20px;
             border-radius: 25px; 
             text-align: center;
             width: 95%; 
-            max-width: 800px; /* Αυξήθηκε για καλύτερη εμφάνιση σε PC */
+            max-width: 800px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             margin: 20px auto; 
             box-sizing: border-box;
@@ -54,7 +54,7 @@
             padding: 15px; 
             color: #ffd700; 
             text-align: center; 
-            width: 80%; /* Responsive πλάτος */
+            width: 80%;
             max-width: 280px;
             border-radius: 8px; 
             outline: none; 
@@ -82,7 +82,7 @@
 
         .events-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Αυτόματες στήλες ανάλογα με το πλάτος */
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
             gap: 15px; 
             margin-top: 20px;
         }
@@ -93,19 +93,34 @@
             border-radius: 12px; 
             display: flex; flex-direction: column; align-items: center;
             border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.2s ease;
+            transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* --- ΣΤΑΘΕΡΟ HOVER ΕΦΕ --- */
+        .event-item:hover {
+            background: rgba(255, 215, 0, 0.1); /* Απαλό χρυσό φόντο */
+            border-color: rgba(255, 215, 0, 0.5); /* Πιο έντονο χρυσό περίγραμμα */
+            transform: translateY(-5px); /* Μικρό σήκωμα προς τα πάνω */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); /* Σκιά για βάθος */
+        }
+
+        /* Ειδικό hover για τα ενεργά (LIVE) events */
+        .event-item.active-row:hover {
+            background: rgba(0, 255, 136, 0.15);
+            border-color: #00ff88;
         }
 
         /* --- MEDIA QUERIES --- */
         @media (max-width: 600px) {
             .glass-panel { padding: 15px; margin: 10px auto; width: 98%; }
-            .events-grid { grid-template-columns: 1fr; } /* Μία στήλη στα πολύ μικρά κινητά */
+            .events-grid { grid-template-columns: 1fr; }
             h1 { font-size: 20px; }
             .section-title { font-size: 12px; }
         }
 
         @media (min-width: 1024px) {
-            .events-grid { grid-template-columns: repeat(3, 1fr); } /* 3 στήλες σε μεγάλα PC */
+            .events-grid { grid-template-columns: repeat(3, 1fr); }
         }
 
         .section-title { font-family: 'Orbitron', sans-serif; color: #ffd700; font-size: 14px; letter-spacing: 3px; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 215, 0, 0.3); display: inline-block; padding-bottom: 5px; }
