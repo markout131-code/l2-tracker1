@@ -41,8 +41,23 @@
         .percentage-text { position: absolute; width: 100%; top: 0; left: 0; line-height: 22px; font-size: 12px; font-family: 'Orbitron', sans-serif; font-weight: bold; color: white; z-index: 5; text-shadow: 1px 1px 2px black; }
 
         /* --- LOGIN OVERLAY --- */
-        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10000; background: #050505; transition: opacity 0.8s ease; }
-        .secure-text { color: #ffffff; font-size: 13px; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; display: block; }
+        /* --- LOGIN OVERLAY --- */
+#login-overlay { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 10000; 
+    /* Αντί για σκέτο μαύρο, βάζουμε το background με το gradient */
+    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), 
+                url('bg.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    transition: opacity 0.8s ease; 
+}
         
         input[type="password"] { 
             background: #000; 
