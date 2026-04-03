@@ -17,6 +17,7 @@
             background-size: cover;
             color: white;
             font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
         }
 
         .glass-panel {
@@ -30,86 +31,69 @@
             width: 95%; 
             max-width: 600px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            position: relative;
         }
 
-        /* --- LOGIN OVERLAY --- */
-        #login-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            z-index: 10000;
-            background: inherit;
-            transition: opacity 0.6s ease;
-        }
-
-        .secure-text {
-            color: #ffffff;
-            font-size: 13px;
-            margin-bottom: 25px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 700;
-            display: block;
-        }
-
-        input[type="password"] {
-            background: #000;
-            border: 2px solid #ffd700;
-            padding: 15px;
-            color: #ffd700;
+        /* --- NEW DYNAMIC LOADING BAR --- */
+        #loader-container { 
+            display: none; 
+            margin-top: 25px; 
             text-align: center;
-            width: 260px;
-            border-radius: 8px;
-            outline: none;
-            font-size: 35px;
-            letter-spacing: 12px;
+        }
+        .loader-track { 
+            width: 100%; 
+            height: 20px; /* Πιο παχιά μπάρα για να φαίνεται το κείμενο */
+            background: rgba(255, 255, 255, 0.05); 
+            border-radius: 4px; 
+            overflow: hidden; 
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            position: relative;
+        }
+        .loader-fill { 
+            width: 0%; 
+            height: 100%; 
+            background: linear-gradient(90deg, #b8860b, #ffd700); 
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); 
+            transition: width 0.1s linear; /* Πολύ γρήγορη ανανέωση για να φαίνεται ομαλό */
+        }
+        .percentage-text {
+            position: absolute;
+            width: 100%;
+            top: 0; left: 0;
+            line-height: 20px;
+            font-size: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px black;
+            z-index: 2;
         }
 
-        #status-msg {
-            color: #ffd700;
-            font-size: 11px;
-            margin-top: 20px;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
+        /* --- LOGIN --- */
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 10000; background: inherit; transition: opacity 0.8s ease; }
+        .secure-text { color: #ffffff; font-size: 13px; margin-bottom: 25px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; display: block; }
+        input[type="password"] { background: #000; border: 2px solid #ffd700; padding: 15px; color: #ffd700; text-align: center; width: 260px; border-radius: 8px; outline: none; font-size: 35px; letter-spacing: 12px; }
+        #status-msg { color: #ffd700; font-size: 11px; margin-top: 20px; font-weight: bold; letter-spacing: 2px; height: 15px; }
 
         /* --- MAIN APP --- */
-        #app { display: none; }
-
+        #app { display: none; opacity: 0; transition: opacity 1s ease; }
         h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; }
         #clock { color: #888; font-family: monospace; margin-bottom: 20px; font-size: 14px; }
         
         .live-timer { font-size: 60px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); }
         .next-timer { font-size: 60px; font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255,152,0,0.3); }
 
-        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
-
-        /* HOVER EFFECT RE-FIXED */
-        .event-item { 
-            background: rgba(255, 255, 255, 0.03); 
-            padding: 12px; 
-            border-radius: 12px; 
-            display: flex; 
-            justify-content: space-between; 
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.2s ease;
-        }
-
-        .event-item:hover {
-            background: rgba(255, 215, 0, 0.1);
-            border-color: #ffd700;
-            transform: scale(1.02);
-        }
-
+        .section-title { font-family: 'Orbitron', sans-serif; color: #ffd700; font-size: 14px; letter-spacing: 3px; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 215, 0, 0.3); display: inline-block; padding-bottom: 5px; }
+        .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .event-item { background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s ease; }
+        .event-item:hover { background: rgba(255, 215, 0, 0.1); border-color: #ffd700; transform: scale(1.02); }
         .active-row { border-color: #00ff88 !important; background: rgba(0, 255, 136, 0.08) !important; }
+        .event-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .event-countdown { color: #ffd700; font-family: monospace; font-size: 16px; font-weight: bold; }
+        .event-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
 
         .shake { animation: shake 0.4s; border-color: #ff4444 !important; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            50% { transform: translateX(8px); }
-            75% { transform: translateX(-8px); }
-        }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-8px); } }
 
         @media (max-width: 500px) { .events-grid { grid-template-columns: 1fr; } }
     </style>
@@ -120,7 +104,19 @@
         <div class="glass-panel">
             <h2 style="color:#ffd700; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
             <span class="secure-text">IDENTITY VERIFICATION REQUIRED</span>
-            <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off">
+            
+            <div id="input-area">
+                <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off">
+            </div>
+
+            <!-- Η ΜΠΑΡΑ ΜΕ ΤΟ ΠΟΣΟΣΤΟ -->
+            <div id="loader-container">
+                <div class="loader-track">
+                    <div class="percentage-text" id="percent">0%</div>
+                    <div class="loader-fill" id="fill"></div>
+                </div>
+            </div>
+
             <div id="status-msg">READY FOR INPUT</div>
         </div>
     </div>
@@ -129,7 +125,9 @@
         <h1>ADEN TRACKER</h1>
         <div id="clock">YOUR LOCAL TIME: 00:00:00</div>
         <div id="active-display"></div>
+        <div class="section-title">TIMES FOR EVENTS</div>
         <div class="events-grid" id="grid"></div>
+        <div style="font-size: 10px; color: #555; margin-top: 20px; letter-spacing: 1px;">* ALL TIMES ARE AUTOMATICALLY ADJUSTED TO YOUR LOCAL TIMEZONE</div>
     </div>
 
     <script>
@@ -143,14 +141,45 @@
 
         document.getElementById('passInput').addEventListener('input', function() {
             if(this.value === SECRET) {
-                document.getElementById('status-msg').innerText = "ACCESS GRANTED";
-                document.getElementById('status-msg').style.color = "#00ff88";
-                setTimeout(() => {
-                    document.getElementById('login-overlay').style.display = 'none';
-                    document.getElementById('app').style.display = 'block';
-                    setInterval(update, 1000);
-                    update();
-                }, 400);
+                const inputArea = document.getElementById('input-area');
+                const loader = document.getElementById('loader-container');
+                const fill = document.getElementById('fill');
+                const percentText = document.getElementById('percent');
+                const status = document.getElementById('status-msg');
+
+                inputArea.style.display = 'none';
+                loader.style.display = 'block';
+                status.innerText = "SYNCHRONIZING WITH SERVER...";
+
+                let width = 0;
+                // Animation για το ποσοστό και τη μπάρα
+                let interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        status.innerText = "ACCESS GRANTED";
+                        status.style.color = "#00ff88";
+                        
+                        setTimeout(() => {
+                            document.getElementById('login-overlay').style.opacity = '0';
+                            setTimeout(() => {
+                                document.getElementById('login-overlay').style.display = 'none';
+                                const app = document.getElementById('app');
+                                app.style.display = 'block';
+                                setTimeout(() => app.style.opacity = '1', 50);
+                                setInterval(update, 1000);
+                                update();
+                            }, 600);
+                        }, 400);
+                    } else {
+                        width++;
+                        fill.style.width = width + '%';
+                        percentText.innerText = width + '%';
+                        
+                        if(width === 40) status.innerText = "LOADING DATABASE...";
+                        if(width === 75) status.innerText = "FINALIZING CONNECTION...";
+                    }
+                }, 20); // Ταχύτητα φόρτωσης
+
             } else if (this.value.length >= 6) {
                 this.classList.add('shake');
                 setTimeout(() => { this.classList.remove('shake'); this.value = ""; }, 500);
@@ -168,7 +197,6 @@
             const nowLocal = new Date();
             const nowGreek = new Date(new Date().toLocaleString("en-US", {timeZone: "Europe/Athens"}));
             const timeDiff = nowGreek.getTime() - nowLocal.getTime();
-
             document.getElementById('clock').innerText = "YOUR LOCAL TIME: " + nowLocal.toLocaleTimeString('en-GB');
 
             let processed = eventsList.map(e => {
@@ -183,19 +211,13 @@
 
             let gridHtml = "";
             processed.forEach(e => {
-                gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}">
-                    <span>${icons[e.n] || ''} ${e.n}</span>
-                    <span style="color:#ffd700; font-family:monospace; font-weight:bold">${e.isLive ? 'LIVE' : formatTime(e.diff)}</span>
-                </div>`;
+                gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}"><span class="event-name">${icons[e.n] || ''} ${e.n}</span><span class="event-countdown">${e.isLive ? 'LIVE NOW' : formatTime(e.diff)}</span><span class="event-label">${e.isLive ? 'ENDS IN' : 'TIME TO START'}</span></div>`;
             });
             document.getElementById('grid').innerHTML = gridHtml;
 
             let live = processed.filter(e => e.isLive)[0] || processed[0];
             let isLive = processed.some(e => e.isLive);
-            document.getElementById('active-display').innerHTML = `
-                <div style="color:${isLive ? '#00ff88' : '#ff9800'}; font-size:12px; font-weight:bold">${isLive ? 'EVENT LIVE' : 'UPCOMING'}</div>
-                <div style="font-size:28px; font-family:Orbitron">${live.n}</div>
-                <div class="${isLive ? 'live-timer' : 'next-timer'}">${formatTime(live.diff)}</div>`;
+            document.getElementById('active-display').innerHTML = `<div style="color:${isLive ? '#00ff88' : '#ff9800'}; font-size:12px; font-weight:bold; letter-spacing:2px;">${isLive ? 'EVENT LIVE' : 'UPCOMING'}</div><div style="font-size:28px; font-family:Orbitron; margin: 10px 0;">${live.n}</div><div class="${isLive ? 'live-timer' : 'next-timer'}">${formatTime(live.diff)}</div>`;
         }
     </script>
 </body>
