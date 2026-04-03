@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L2 ADEN - UNIVERSAL TRACKER</title>
+    <title>L2 ADEN - SECURE TRACKER</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         /* --- GLOBAL STYLE --- */
@@ -17,7 +17,6 @@
             background-size: cover;
             color: white;
             font-family: 'Rajdhani', sans-serif;
-            overflow: hidden;
         }
 
         .glass-panel {
@@ -39,8 +38,8 @@
             top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
             z-index: 10000;
-            transition: 0.6s ease-in-out;
             background: inherit;
+            transition: opacity 0.6s ease;
         }
 
         .secure-text {
@@ -64,7 +63,6 @@
             outline: none;
             font-size: 35px;
             letter-spacing: 12px;
-            transition: 0.3s;
         }
 
         #status-msg {
@@ -73,13 +71,12 @@
             margin-top: 20px;
             font-weight: bold;
             letter-spacing: 2px;
-            text-transform: uppercase;
         }
 
         /* --- MAIN APP --- */
         #app { display: none; }
 
-        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; margin-top: 0; }
+        h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; }
         #clock { color: #888; font-family: monospace; margin-bottom: 20px; font-size: 14px; }
         
         .live-timer { font-size: 60px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); }
@@ -87,7 +84,7 @@
 
         .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
 
-        /* ΤΟ ΕΦΕ ΠΟΥ ΖΗΤΗΣΕΣ ΣΤΑ ΚΟΥΜΠΙΑ (EVENTS) */
+        /* HOVER EFFECT RE-FIXED */
         .event-item { 
             background: rgba(255, 255, 255, 0.03); 
             padding: 12px; 
@@ -95,27 +92,18 @@
             display: flex; 
             justify-content: space-between; 
             border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease; /* Ομαλή μετάβαση */
-            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .event-item:hover {
-            background: rgba(255, 215, 0, 0.08); /* Ελαφρύ χρυσό φόντο */
-            border-color: rgba(255, 215, 0, 0.4); /* Πιο έντονο περίγραμμα */
-            transform: translateY(-2px); /* Μικρή ανύψωση */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            transform: scale(1.02);
         }
 
-        .event-item:hover span:first-child {
-            color: #ffd700; /* Το όνομα του event γίνεται χρυσό στο hover */
-        }
+        .active-row { border-color: #00ff88 !important; background: rgba(0, 255, 136, 0.08) !important; }
 
-        .active-row { 
-            border-color: #00ff88 !important; 
-            background: rgba(0, 255, 136, 0.05) !important; 
-        }
-
-        .shake { animation: shake 0.4s ease-in-out; border-color: #ff4444 !important; }
+        .shake { animation: shake 0.4s; border-color: #ff4444 !important; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-8px); }
@@ -123,69 +111,51 @@
             75% { transform: translateX(-8px); }
         }
 
-        @media (max-width: 500px) { .events-grid { grid-template-columns: 1fr; } .live-timer, .next-timer { font-size: 45px; } }
+        @media (max-width: 500px) { .events-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN -->
     <div id="login-overlay">
         <div class="glass-panel">
-            <h2 style="color:#ffd700; margin-bottom:5px; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
+            <h2 style="color:#ffd700; font-size:18px; letter-spacing:3px;">SYSTEM ACCESS</h2>
             <span class="secure-text">IDENTITY VERIFICATION REQUIRED</span>
             <input type="password" id="passInput" placeholder="••••••" autofocus autocomplete="off">
             <div id="status-msg">READY FOR INPUT</div>
         </div>
     </div>
 
-    <!-- MAIN APP -->
     <div class="glass-panel" id="app">
         <h1>ADEN TRACKER</h1>
-        <div id="clock">LOCAL TIME: 00:00:00</div>
+        <div id="clock">YOUR LOCAL TIME: 00:00:00</div>
         <div id="active-display"></div>
         <div class="events-grid" id="grid"></div>
     </div>
 
     <script>
         const SECRET = "adenl2";
-        const inputField = document.getElementById('passInput');
-        const statusMsg = document.getElementById('status-msg');
-
-        inputField.addEventListener('input', function() {
-            if(this.value === SECRET) {
-                statusMsg.innerText = "ACCESS GRANTED";
-                statusMsg.style.color = "#00ff88";
-                this.style.borderColor = "#00ff88";
-                
-                setTimeout(() => {
-                    document.getElementById('login-overlay').style.opacity = '0';
-                    setTimeout(() => {
-                        document.getElementById('login-overlay').style.display = 'none';
-                        document.getElementById('app').style.display = 'block';
-                        startTracker();
-                    }, 600);
-                }, 200);
-            } 
-            else if (this.value.length >= 6) {
-                statusMsg.innerText = "ACCESS DENIED - INVALID KEY";
-                statusMsg.style.color = "#ff4444";
-                this.classList.add('shake');
-                setTimeout(() => {
-                    this.classList.remove('shake');
-                    this.value = "";
-                    statusMsg.innerText = "READY FOR INPUT";
-                    statusMsg.style.color = "#ffd700";
-                }, 600);
-            }
-        });
-
         const icons = { "Invasion": "⚔️", "Teddy Bears": "🧸", "Catacombs": "💀", "Olympiad": "🏆", "Fortress": "🚩", "Sieges": "🏰", "Forest of Duels": "🤺", "Mafia's Hideout": "🕵️‍♂️", "Iron Depot": "🏗️", "Boss Subjugation": "👹" };
-        
         const eventsList = [
             { n: "Invasion", t: "15:40", d: 30 }, { n: "Invasion", t: "19:40", d: 30 }, { n: "Invasion", t: "23:40", d: 30 }, { n: "Invasion", t: "03:40", d: 30 },
             { n: "Teddy Bears", t: "13:00", d: 15 }, { n: "Teddy Bears", t: "00:00", d: 15 }, { n: "Olympiad", t: "02:00", d: 30 }, { n: "Fortress", t: "22:00", d: 20 }, 
             { n: "Forest of Duels", t: "23:30", d: 30 }, { n: "Mafia's Hideout", t: "00:00", d: 25 }, { n: "Iron Depot", t: "22:00", d: 15 }, { n: "Boss Subjugation", t: "22:20", d: 25 }
         ];
+
+        document.getElementById('passInput').addEventListener('input', function() {
+            if(this.value === SECRET) {
+                document.getElementById('status-msg').innerText = "ACCESS GRANTED";
+                document.getElementById('status-msg').style.color = "#00ff88";
+                setTimeout(() => {
+                    document.getElementById('login-overlay').style.display = 'none';
+                    document.getElementById('app').style.display = 'block';
+                    setInterval(update, 1000);
+                    update();
+                }, 400);
+            } else if (this.value.length >= 6) {
+                this.classList.add('shake');
+                setTimeout(() => { this.classList.remove('shake'); this.value = ""; }, 500);
+            }
+        });
 
         function formatTime(ms) {
             let hh = Math.floor(ms / 3600000);
@@ -194,62 +164,38 @@
             return String(hh).padStart(2,'0') + ":" + String(mm).padStart(2,'0') + ":" + String(ss).padStart(2,'0');
         }
 
-        function getGreekTime() {
-            return new Date(new Date().toLocaleString("en-US", {timeZone: "Europe/Athens"}));
-        }
-
         function update() {
             const nowLocal = new Date();
-            const nowGreek = getGreekTime();
+            const nowGreek = new Date(new Date().toLocaleString("en-US", {timeZone: "Europe/Athens"}));
             const timeDiff = nowGreek.getTime() - nowLocal.getTime();
 
             document.getElementById('clock').innerText = "YOUR LOCAL TIME: " + nowLocal.toLocaleTimeString('en-GB');
 
             let processed = eventsList.map(e => {
                 const [h, m] = e.t.split(':').map(Number);
-                let startGreek = new Date(nowGreek);
-                startGreek.setHours(h, m, 0, 0);
-                let endGreek = new Date(startGreek.getTime() + e.d * 60000);
-
-                if (nowGreek > endGreek) {
-                    startGreek.setDate(startGreek.getDate() + 1);
-                    endGreek.setDate(endGreek.getDate() + 1);
-                }
-
-                let startLocal = new Date(startGreek.getTime() - timeDiff);
-                let endLocal = new Date(endGreek.getTime() - timeDiff);
-
-                let isLive = (nowLocal >= startLocal && nowLocal <= endLocal);
-                let diff = isLive ? (endLocal - nowLocal) : (startLocal - nowLocal);
-
-                return { ...e, isLive, diff };
-            });
-
-            processed.sort((a, b) => a.diff - b.diff);
+                let startG = new Date(nowGreek); startG.setHours(h, m, 0, 0);
+                let endG = new Date(startG.getTime() + e.d * 60000);
+                if (nowGreek > endG) { startG.setDate(startG.getDate() + 1); endG.setDate(endG.getDate() + 1); }
+                let startL = new Date(startG.getTime() - timeDiff);
+                let endL = new Date(endG.getTime() - timeDiff);
+                return { ...e, isLive: (nowLocal >= startL && nowLocal <= endL), diff: (nowLocal >= startL && nowLocal <= endL) ? (endL - nowLocal) : (startL - nowLocal) };
+            }).sort((a, b) => a.diff - b.diff);
 
             let gridHtml = "";
             processed.forEach(e => {
                 gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}">
-                    <span style="font-size:13px; transition: color 0.3s;">${icons[e.n] || ''} ${e.n}</span>
+                    <span>${icons[e.n] || ''} ${e.n}</span>
                     <span style="color:#ffd700; font-family:monospace; font-weight:bold">${e.isLive ? 'LIVE' : formatTime(e.diff)}</span>
                 </div>`;
             });
             document.getElementById('grid').innerHTML = gridHtml;
 
-            let live = processed.filter(e => e.isLive);
-            let next = processed.find(e => !e.isLive);
-            let display = document.getElementById('active-display');
-
-            if (live.length > 0) {
-                display.innerHTML = `<div style="color:#00ff88; font-size:12px; letter-spacing:2px; font-weight:bold">EVENT LIVE</div><div style="font-size:28px; font-family:Orbitron">${live[0].n}</div><div class="live-timer">${formatTime(live[0].diff)}</div>`;
-            } else {
-                display.innerHTML = `<div style="color:#ff9800; font-size:12px; letter-spacing:2px; font-weight:bold">UPCOMING</div><div style="font-size:28px; font-family:Orbitron">${next.n}</div><div class="next-timer">${formatTime(next.diff)}</div>`;
-            }
-        }
-
-        function startTracker() {
-            setInterval(update, 1000);
-            update();
+            let live = processed.filter(e => e.isLive)[0] || processed[0];
+            let isLive = processed.some(e => e.isLive);
+            document.getElementById('active-display').innerHTML = `
+                <div style="color:${isLive ? '#00ff88' : '#ff9800'}; font-size:12px; font-weight:bold">${isLive ? 'EVENT LIVE' : 'UPCOMING'}</div>
+                <div style="font-size:28px; font-family:Orbitron">${live.n}</div>
+                <div class="${isLive ? 'live-timer' : 'next-timer'}">${formatTime(live.diff)}</div>`;
         }
     </script>
 </body>
