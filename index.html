@@ -20,7 +20,6 @@
             overflow: hidden;
         }
 
-        /* --- ΚΟΙΝΟ ΣΤΥΛ ΓΙΑ LOGIN & APP --- */
         .glass-panel {
             background: rgba(18, 18, 24, 0.92);
             backdrop-filter: blur(15px);
@@ -41,7 +40,7 @@
             display: flex; justify-content: center; align-items: center;
             z-index: 10000;
             transition: 0.6s ease-in-out;
-            background: inherit; /* Παίρνει το background του body */
+            background: inherit;
         }
 
         .secure-text {
@@ -82,15 +81,39 @@
 
         h1 { font-family: 'Orbitron', sans-serif; color: #ffd700; letter-spacing: 4px; margin-bottom: 5px; margin-top: 0; }
         #clock { color: #888; font-family: monospace; margin-bottom: 20px; font-size: 14px; }
+        
         .live-timer { font-size: 60px; font-weight: bold; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.4); }
         .next-timer { font-size: 60px; font-weight: bold; color: #ff9800; text-shadow: 0 0 20px rgba(255,152,0,0.3); }
 
         .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
+
+        /* ΤΟ ΕΦΕ ΠΟΥ ΖΗΤΗΣΕΣ ΣΤΑ ΚΟΥΜΠΙΑ (EVENTS) */
         .event-item { 
-            background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 12px; 
-            display: flex; justify-content: space-between; border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.03); 
+            padding: 12px; 
+            border-radius: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease; /* Ομαλή μετάβαση */
+            cursor: pointer;
         }
-        .active-row { border-color: #00ff88; background: rgba(0, 255, 136, 0.05); }
+
+        .event-item:hover {
+            background: rgba(255, 215, 0, 0.08); /* Ελαφρύ χρυσό φόντο */
+            border-color: rgba(255, 215, 0, 0.4); /* Πιο έντονο περίγραμμα */
+            transform: translateY(-2px); /* Μικρή ανύψωση */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .event-item:hover span:first-child {
+            color: #ffd700; /* Το όνομα του event γίνεται χρυσό στο hover */
+        }
+
+        .active-row { 
+            border-color: #00ff88 !important; 
+            background: rgba(0, 255, 136, 0.05) !important; 
+        }
 
         .shake { animation: shake 0.4s ease-in-out; border-color: #ff4444 !important; }
         @keyframes shake {
@@ -128,7 +151,6 @@
         const inputField = document.getElementById('passInput');
         const statusMsg = document.getElementById('status-msg');
 
-        // LOGIN LOGIC
         inputField.addEventListener('input', function() {
             if(this.value === SECRET) {
                 statusMsg.innerText = "ACCESS GRANTED";
@@ -157,11 +179,8 @@
             }
         });
 
-        // TRACKER & TIMEZONE LOGIC
         const icons = { "Invasion": "⚔️", "Teddy Bears": "🧸", "Catacombs": "💀", "Olympiad": "🏆", "Fortress": "🚩", "Sieges": "🏰", "Forest of Duels": "🤺", "Mafia's Hideout": "🕵️‍♂️", "Iron Depot": "🏗️", "Boss Subjugation": "👹" };
         
-        // Οι ώρες είναι σε ώρα Ελλάδος (GMT+3 ή GMT+2 ανάλογα την εποχή)
-        // Ο κώδικας θα υπολογίσει τη διαφορά αυτόματα
         const eventsList = [
             { n: "Invasion", t: "15:40", d: 30 }, { n: "Invasion", t: "19:40", d: 30 }, { n: "Invasion", t: "23:40", d: 30 }, { n: "Invasion", t: "03:40", d: 30 },
             { n: "Teddy Bears", t: "13:00", d: 15 }, { n: "Teddy Bears", t: "00:00", d: 15 }, { n: "Olympiad", t: "02:00", d: 30 }, { n: "Fortress", t: "22:00", d: 20 }, 
@@ -172,74 +191,4 @@
             let hh = Math.floor(ms / 3600000);
             let mm = Math.floor((ms % 3600000) / 60000);
             let ss = Math.floor((ms % 60000) / 1000);
-            return String(hh).padStart(2,'0') + ":" + String(mm).padStart(2,'0') + ":" + String(ss).padStart(2,'0');
-        }
-
-        function getGreekTime() {
-            // Δημιουργούμε μια ημερομηνία που δείχνει πάντα την τρέχουσα ώρα Ελλάδος
-            return new Date(new Date().toLocaleString("en-US", {timeZone: "Europe/Athens"}));
-        }
-
-        function update() {
-            const nowLocal = new Date();
-            const nowGreek = getGreekTime();
-            
-            // Υπολογίζουμε τη διαφορά (offset) μεταξύ Ελλάδος και τοπικής ώρας χρήστη
-            const timeDiff = nowGreek.getTime() - nowLocal.getTime();
-
-            document.getElementById('clock').innerText = "YOUR LOCAL TIME: " + nowLocal.toLocaleTimeString('en-GB');
-
-            let processed = eventsList.map(e => {
-                const [h, m] = e.t.split(':').map(Number);
-                
-                // Φτιάχνουμε το event με βάση την ώρα Ελλάδος
-                let startGreek = new Date(nowGreek);
-                startGreek.setHours(h, m, 0, 0);
-                
-                let endGreek = new Date(startGreek.getTime() + e.d * 60000);
-
-                // Αν το event πέρασε για σήμερα στην Ελλάδα, πάμε στην επόμενη μέρα
-                if (nowGreek > endGreek) {
-                    startGreek.setDate(startGreek.getDate() + 1);
-                    endGreek.setDate(endGreek.getDate() + 1);
-                }
-
-                // Μετατρέπουμε την ώρα Ελλάδος σε τοπική ώρα χρήστη για το χρονόμετρο
-                let startLocal = new Date(startGreek.getTime() - timeDiff);
-                let endLocal = new Date(endGreek.getTime() - timeDiff);
-
-                let isLive = (nowLocal >= startLocal && nowLocal <= endLocal);
-                let diff = isLive ? (endLocal - nowLocal) : (startLocal - nowLocal);
-
-                return { ...e, isLive, diff };
-            });
-
-            processed.sort((a, b) => a.diff - b.diff);
-
-            let gridHtml = "";
-            processed.forEach(e => {
-                gridHtml += `<div class="event-item ${e.isLive ? 'active-row' : ''}">
-                    <span style="font-size:13px">${icons[e.n] || ''} ${e.n}</span>
-                    <span style="color:#ffd700; font-family:monospace; font-weight:bold">${e.isLive ? 'LIVE' : formatTime(e.diff)}</span>
-                </div>`;
-            });
-            document.getElementById('grid').innerHTML = gridHtml;
-
-            let live = processed.filter(e => e.isLive);
-            let next = processed.find(e => !e.isLive);
-            let display = document.getElementById('active-display');
-
-            if (live.length > 0) {
-                display.innerHTML = `<div style="color:#00ff88; font-size:12px; letter-spacing:2px; font-weight:bold">EVENT LIVE</div><div style="font-size:28px; font-family:Orbitron">${live[0].n}</div><div class="live-timer">${formatTime(live[0].diff)}</div>`;
-            } else {
-                display.innerHTML = `<div style="color:#ff9800; font-size:12px; letter-spacing:2px; font-weight:bold">UPCOMING</div><div style="font-size:28px; font-family:Orbitron">${next.n}</div><div class="next-timer">${formatTime(next.diff)}</div>`;
-            }
-        }
-
-        function startTracker() {
-            setInterval(update, 1000);
-            update();
-        }
-    </script>
-</body>
-</html>
+            return String(hh).padStart
